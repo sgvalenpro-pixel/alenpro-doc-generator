@@ -113,8 +113,8 @@ table.reg td.code{font-family:'Courier New',monospace;font-weight:700}
   <div class="card">
     <div class="card-title">3 · Control de firmas</div>
     <div class="grid3">
-      <div class="field"><label>Elaboró</label><input type="text" id="elabN" placeholder="Nombre completo"></div>
-      <div class="field"><label>Revisó</label><input type="text" id="revN" placeholder="Nombre completo"></div>
+      <div class="field"><label>Elaboró</label><input type="text" id="elabN" placeholder="Nombre completo" value=""></div>
+      <div class="field"><label>Revisó</label><input type="text" id="revN" placeholder="Nombre completo" value=""></div>
       <div class="field"><label>Aprobó</label><input type="text" id="aprN" value="Rodrigo Gutiérrez Vásquez"></div>
     </div>
     <div class="grid3">
@@ -123,6 +123,22 @@ table.reg td.code{font-family:'Courier New',monospace;font-weight:700}
       <div class="field"><label>Cargo</label><input type="text" id="aprC" value="Gerente General"></div>
     </div>
     <p class="nota" id="firmasNota" style="margin-top:6px"></p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">4 · Contenido del documento</div>
+    <div class="field">
+      <label>Objetivo</label>
+      <textarea id="objetivo" rows="3" placeholder="Describe el objetivo del documento…" style="width:100%;padding:10px 12px;border:1.5px solid #ccc;border-radius:8px;font-size:15px;font-family:Arial,Helvetica,sans-serif;resize:vertical"></textarea>
+    </div>
+    <div class="field">
+      <label>Alcance</label>
+      <textarea id="alcance" rows="3" placeholder="Define el alcance del documento…" style="width:100%;padding:10px 12px;border:1.5px solid #ccc;border-radius:8px;font-size:15px;font-family:Arial,Helvetica,sans-serif;resize:vertical"></textarea>
+    </div>
+    <div class="field">
+      <label>Desarrollo</label>
+      <textarea id="desarrollo" rows="6" placeholder="Desarrolla el contenido principal…" style="width:100%;padding:10px 12px;border:1.5px solid #ccc;border-radius:8px;font-size:15px;font-family:Arial,Helvetica,sans-serif;resize:vertical"></textarea>
+    </div>
   </div>
 
   <button class="btn-gen" id="btnGen">⬇ Reservar consecutivo y generar documento</button>
@@ -330,6 +346,10 @@ async function onGenerar(){
         </tr>
       </table>` : "";
 
+    const objetivo  = $("objetivo").value.trim()  || "[Escriba aquí el objetivo del documento.]";
+    const alcance   = $("alcance").value.trim()   || "[Defina el alcance del documento.]";
+    const desarrollo= $("desarrollo").value.trim()|| "[Desarrolle el contenido aquí.]";
+
     const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
 <title>${codigo} · ${nombre}</title>
 <style>
@@ -339,7 +359,7 @@ async function onGenerar(){
   .logo-cel{width:130pt;text-align:center;font-size:9pt;color:#999}
   h2{font-size:13pt;margin:20px 0 6px}
   h3{font-size:11pt;margin:20px 0 6px}
-  p.placeholder{color:#aaa;font-style:italic}
+  p{white-space:pre-wrap;margin:0 0 8px}
   @media print{body{margin:1.5cm}}
 </style></head><body>
 <table class="enc">
@@ -359,13 +379,13 @@ async function onGenerar(){
 </table>
 
 <h2>OBJETIVO</h2>
-<p class="placeholder">[Escriba aquí el objetivo del documento.]</p>
+<p>${objetivo}</p>
 
 <h2>ALCANCE</h2>
-<p class="placeholder">[Defina el alcance del documento.]</p>
+<p>${alcance}</p>
 
 <h2>DESARROLLO</h2>
-<p class="placeholder">[Desarrolle el contenido aquí.]</p>
+<p>${desarrollo}</p>
 
 ${firmasHTML}
 ${cambiosHTML}
