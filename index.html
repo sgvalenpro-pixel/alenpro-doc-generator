@@ -205,7 +205,8 @@ const CSS_FORMATO=`
   .pie{margin-top:20px;border-top:1px solid #000;padding-top:6px;text-align:center;font-size:7.5pt;color:#555}
   h2{font-size:11pt;margin:16px 0 5px}
   p.contenido{white-space:pre-wrap;font-size:9.5pt;margin:0 0 8px}
-  @media print{body{margin:1cm}@page{size:letter landscape}}
+  @page{size:letter landscape;margin:1cm}
+  @media print{body{margin:0}}
 `;
 
 /* ===== ENCABEZADO COMPARTIDO ===== */
@@ -229,7 +230,7 @@ function htmlEncabezado(codigo,ver,fechaA,titulo){
 
 /* ===== FOR-ST-018 · Contratistas y Conductores ===== */
 function htmlFOR018(codigo,ver,fechaA){
-  const filas=Array.from({length:30},(_,i)=>{
+  const filas=Array.from({length:10},(_,i)=>{
     const cls=i%2===0?"row-norm":"row-alt";
     return `<tr class="${cls}">
       <td class="dato"></td>
@@ -247,7 +248,12 @@ function htmlFOR018(codigo,ver,fechaA){
 
   return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
 <title>${codigo} · Contratistas y Conductores</title>
-<style>${CSS_FORMATO}</style>
+<style>${CSS_FORMATO}
+  body{margin:1cm}
+  table{table-layout:fixed}
+  td,th{font-size:8.5pt}
+  td.dato{height:26pt}
+</style>
 </head><body>
 ${htmlEncabezado(codigo,ver,fechaA,"REGISTRO DE INGRESO E INDUCCIÓN CONTRATISTAS Y CONDUCTORES")}
 <br>
@@ -281,7 +287,7 @@ ${htmlEncabezado(codigo,ver,fechaA,"REGISTRO DE INGRESO E INDUCCIÓN CONTRATISTA
 
 /* ===== FOR-ST-017 · Visitantes y Proveedores ===== */
 function htmlFOR017(codigo,ver,fechaA){
-  const filas=Array.from({length:30},(_,i)=>{
+  const filas=Array.from({length:10},(_,i)=>{
     const cls=i%2===0?"row-norm":"row-alt";
     return `<tr class="${cls}">
       <td class="dato"></td>
@@ -299,7 +305,12 @@ function htmlFOR017(codigo,ver,fechaA){
 
   return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
 <title>${codigo} · Visitantes y Proveedores</title>
-<style>${CSS_FORMATO}</style>
+<style>${CSS_FORMATO}
+  body{margin:1cm}
+  table{table-layout:fixed}
+  td,th{font-size:8.5pt}
+  td.dato{height:26pt}
+</style>
 </head><body>
 ${htmlEncabezado(codigo,ver,fechaA,"REGISTRO DE INGRESO DE VISITANTES Y PROVEEDORES")}
 <br>
