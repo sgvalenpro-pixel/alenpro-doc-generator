@@ -22,14 +22,17 @@ body{font-family:Arial,Helvetica,sans-serif;background:#f4f4f2;color:#1a1a1a;fon
 .card-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#555;border-bottom:2px solid #FFD400;padding-bottom:8px;margin-bottom:16px}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:12px;font-weight:700;color:#444;margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
-.field select,.field input{width:100%;padding:10px 12px;border:1.5px solid #ccc;border-radius:8px;font-size:15px;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#1a1a1a}
-.field select:focus,.field input:focus{outline:none;border-color:#FFD400;box-shadow:0 0 0 3px #fff6cc}
+.field select,.field input,.field textarea{width:100%;padding:10px 12px;border:1.5px solid #ccc;border-radius:8px;font-size:15px;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#1a1a1a}
+.field select:focus,.field input:focus,.field textarea:focus{outline:none;border-color:#FFD400;box-shadow:0 0 0 3px #fff6cc}
+.field textarea{resize:vertical}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
 .codigo-display{background:#1a1a1a;color:#FFD400;font-size:26px;font-weight:700;text-align:center;padding:16px;border-radius:10px;letter-spacing:4px;font-family:'Courier New',monospace}
 .codigo-sub{text-align:center;font-size:12px;color:#888;margin-top:8px}
 .badge{display:inline-block;background:#fff6cc;color:#7a5f00;border:1px solid #FFD400;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;margin:4px 2px}
 .badges{text-align:center;margin-top:6px}
+.sst-box{background:#fff8e1;border:1.5px solid #FFD400;border-radius:10px;padding:16px;margin-bottom:14px;display:none}
+.sst-box .sst-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#7a5f00;margin-bottom:12px}
 .btn-gen{width:100%;padding:14px;background:#FFD400;color:#1a1a1a;font-size:16px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:Arial}
 .btn-gen:hover{background:#e6c000}
 .btn-gen:disabled{opacity:.5;cursor:not-allowed}
@@ -110,11 +113,23 @@ table.reg td.code{font-family:'Courier New',monospace;font-weight:700}
     <div class="badges" id="badges"></div>
   </div>
 
-  <div class="card">
+  <div class="sst-box" id="sstBox">
+    <div class="sst-title">📋 Formato SST — selecciona cuál generar</div>
+    <div class="field">
+      <label>Formato</label>
+      <select id="sstFormato">
+        <option value="FOR017">FOR-ST-017 · Registro Ingreso Visitantes y Proveedores</option>
+        <option value="FOR018">FOR-ST-018 · Registro Ingreso Contratistas y Conductores</option>
+      </select>
+    </div>
+    <p class="nota">Se generará un archivo HTML imprimible. Desde el navegador usa Ctrl+P → Guardar como PDF.</p>
+  </div>
+
+  <div class="card" id="firmasCard">
     <div class="card-title">3 · Control de firmas</div>
     <div class="grid3">
-      <div class="field"><label>Elaboró</label><input type="text" id="elabN" placeholder="Nombre completo" value=""></div>
-      <div class="field"><label>Revisó</label><input type="text" id="revN" placeholder="Nombre completo" value=""></div>
+      <div class="field"><label>Elaboró</label><input type="text" id="elabN" placeholder="Nombre completo"></div>
+      <div class="field"><label>Revisó</label><input type="text" id="revN" placeholder="Nombre completo"></div>
       <div class="field"><label>Aprobó</label><input type="text" id="aprN" value="Rodrigo Gutiérrez Vásquez"></div>
     </div>
     <div class="grid3">
@@ -125,19 +140,19 @@ table.reg td.code{font-family:'Courier New',monospace;font-weight:700}
     <p class="nota" id="firmasNota" style="margin-top:6px"></p>
   </div>
 
-  <div class="card">
+  <div class="card" id="contenidoCard">
     <div class="card-title">4 · Contenido del documento</div>
     <div class="field">
       <label>Objetivo</label>
-      <textarea id="objetivo" rows="3" placeholder="Describe el objetivo del documento…" style="width:100%;padding:10px 12px;border:1.5px solid #ccc;border-radius:8px;font-size:15px;font-family:Arial,Helvetica,sans-serif;resize:vertical"></textarea>
+      <textarea id="objetivo" rows="3" placeholder="Describe el objetivo del documento…"></textarea>
     </div>
     <div class="field">
       <label>Alcance</label>
-      <textarea id="alcance" rows="3" placeholder="Define el alcance del documento…" style="width:100%;padding:10px 12px;border:1.5px solid #ccc;border-radius:8px;font-size:15px;font-family:Arial,Helvetica,sans-serif;resize:vertical"></textarea>
+      <textarea id="alcance" rows="3" placeholder="Define el alcance del documento…"></textarea>
     </div>
     <div class="field">
       <label>Desarrollo</label>
-      <textarea id="desarrollo" rows="6" placeholder="Desarrolla el contenido principal…" style="width:100%;padding:10px 12px;border:1.5px solid #ccc;border-radius:8px;font-size:15px;font-family:Arial,Helvetica,sans-serif;resize:vertical"></textarea>
+      <textarea id="desarrollo" rows="6" placeholder="Desarrolla el contenido principal…"></textarea>
     </div>
   </div>
 
@@ -145,7 +160,7 @@ table.reg td.code{font-family:'Courier New',monospace;font-weight:700}
   <div class="estado" id="estado"></div>
 
   <div class="card" style="margin-top:16px">
-    <div class="card-title">4 · Registro generado</div>
+    <div class="card-title">5 · Registro generado</div>
     <div class="tbl-wrap" id="regWrap"><p class="nota">Aún no se han generado documentos.</p></div>
     <div class="row-btns">
       <button class="btn-sec" id="btnCsv">Exportar CSV</button>
@@ -156,8 +171,244 @@ table.reg td.code{font-family:'Courier New',monospace;font-weight:700}
 </div>
 
 <script>
+/* ===== LOGO SVG (cruz amarilla, fondo blanco) ===== */
+const LOGO_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 230">
+  <rect width="220" height="230" fill="white"/>
+  <!-- Cruz -->
+  <rect x="76" y="6" width="52" height="182" rx="24" fill="#FFD400"/>
+  <rect x="6" y="76" width="182" height="52" rx="24" fill="#FFD400"/>
+  <!-- Texto ALEN+PRO -->
+  <text x="108" y="210" font-family="Arial" font-size="18" font-weight="bold" fill="#1a1a1a" text-anchor="middle" letter-spacing="1">ALEN</text>
+  <text x="148" y="210" font-family="Arial" font-size="18" font-weight="bold" fill="#FFD400" text-anchor="middle">+</text>
+  <text x="178" y="210" font-family="Arial" font-size="18" font-weight="bold" fill="#1a1a1a" text-anchor="middle" letter-spacing="1">PRO</text>
+</svg>`;
+const LOGO_URI="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(LOGO_SVG);
+
+/* ===== ESTILOS HTML COMPARTIDOS ===== */
+const CSS_FORMATO=`
+  body{font-family:Arial,sans-serif;font-size:9.5pt;margin:1.5cm;color:#000}
+  table{border-collapse:collapse;width:100%}
+  td,th{border:1px solid #000;padding:5px 7px;vertical-align:middle}
+  .enc-logo{width:100pt;text-align:center;vertical-align:middle}
+  .enc-logo img{width:80px;display:block;margin:0 auto}
+  .enc-empresa{text-align:center;font-weight:bold;font-size:12pt}
+  .enc-titulo{text-align:center;font-weight:bold;font-size:10.5pt}
+  .enc-dato{text-align:center;font-size:9.5pt}
+  .enc-dato b{font-weight:bold}
+  .th-main{background:#d9d9d9;font-weight:bold;text-align:center;font-size:9pt}
+  .th-sub{background:#d9d9d9;font-weight:bold;text-align:center;font-size:8.5pt}
+  .row-alt{background:#FFFDE7}
+  .row-norm{background:#ffffff}
+  td.dato{text-align:center;height:22pt}
+  .texto-induccion{font-size:8.5pt;text-align:justify;padding:8px;line-height:1.4}
+  .clausula{font-size:8pt;font-style:italic;text-align:center;padding:8px;border-top:1px solid #000;margin-top:4px}
+  .pie{margin-top:20px;border-top:1px solid #000;padding-top:6px;text-align:center;font-size:7.5pt;color:#555}
+  h2{font-size:11pt;margin:16px 0 5px}
+  p.contenido{white-space:pre-wrap;font-size:9.5pt;margin:0 0 8px}
+  @media print{body{margin:1cm}@page{size:letter landscape}}
+`;
+
+/* ===== ENCABEZADO COMPARTIDO ===== */
+function htmlEncabezado(codigo,ver,fechaA,titulo){
+  return `<table>
+    <tr>
+      <td class="enc-logo" rowspan="4"><img src="${LOGO_URI}" alt="ALEN+PRO"></td>
+      <td class="enc-empresa" colspan="2">ALIMENTO ENERGÉTICO PROTEICO S.A.S</td>
+    </tr>
+    <tr><td class="enc-titulo" colspan="2">${titulo}</td></tr>
+    <tr>
+      <td class="enc-dato"><b>Código:</b> ${codigo}</td>
+      <td class="enc-dato"><b>Versión:</b> ${ver}</td>
+    </tr>
+    <tr>
+      <td class="enc-dato"><b>Fecha de aprobación:</b> ${fechaA||"MM-AAAA"}</td>
+      <td class="enc-dato"><b>Página</b> 1 de 1</td>
+    </tr>
+  </table>`;
+}
+
+/* ===== FOR-ST-018 · Contratistas y Conductores ===== */
+function htmlFOR018(codigo,ver,fechaA){
+  const filas=Array.from({length:30},(_,i)=>{
+    const cls=i%2===0?"row-norm":"row-alt";
+    return `<tr class="${cls}">
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+    </tr>`;
+  }).join("");
+
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<title>${codigo} · Contratistas y Conductores</title>
+<style>${CSS_FORMATO}</style>
+</head><body>
+${htmlEncabezado(codigo,ver,fechaA,"REGISTRO DE INGRESO E INDUCCIÓN CONTRATISTAS Y CONDUCTORES")}
+<br>
+<table>
+  <tr><td class="texto-induccion" colspan="10">
+    Manifiesto que he recibido la inducción en Seguridad y Salud en el Trabajo (SST), en la cual se me informaron las normas que debo cumplir durante mi permanencia en las instalaciones de la empresa ALEN+PRO S.A.S. Me queda claro que está estrictamente prohibido el ingreso y la manipulación del teléfono celular en el área de planta, teniendo en cuenta el riesgo químico (HEXANO) que esto representa para mí y para mis compañeros. Declaro que tengo conocimiento y acepto que el incumplimiento de estas normas de seguridad constituye justa causa para el retiro inmediato y el bloqueo de mi ingreso a las instalaciones.
+  </td></tr>
+  <tr>
+    <th class="th-main" rowspan="2">FECHA</th>
+    <th class="th-main" rowspan="2">PLACA<br>VEHÍCULO</th>
+    <th class="th-main" colspan="3">DOCUMENTACIÓN VEHÍCULO</th>
+    <th class="th-main" rowspan="2">NOMBRE</th>
+    <th class="th-main" rowspan="2">EMPRESA</th>
+    <th class="th-main" rowspan="2">HR<br>INGRESO</th>
+    <th class="th-main" rowspan="2">HR<br>SALIDA</th>
+    <th class="th-main" rowspan="2">FIRMA Y<br>CÉDULA</th>
+  </tr>
+  <tr>
+    <th class="th-sub">SOAT</th>
+    <th class="th-sub">TECNO</th>
+    <th class="th-sub">LIC</th>
+  </tr>
+  ${filas}
+</table>
+<div class="pie">
+  Alimento Energético Proteico S.A.S. · Corregimiento Puerto Caldas – Paraje La Marina – Planta ALEN+PRO<br>
+  Pereira – Risaralda | www.alenpro.co
+</div>
+</body></html>`;
+}
+
+/* ===== FOR-ST-017 · Visitantes y Proveedores ===== */
+function htmlFOR017(codigo,ver,fechaA){
+  const filas=Array.from({length:30},(_,i)=>{
+    const cls=i%2===0?"row-norm":"row-alt";
+    return `<tr class="${cls}">
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+      <td class="dato"></td>
+    </tr>`;
+  }).join("");
+
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<title>${codigo} · Visitantes y Proveedores</title>
+<style>${CSS_FORMATO}</style>
+</head><body>
+${htmlEncabezado(codigo,ver,fechaA,"REGISTRO DE INGRESO DE VISITANTES Y PROVEEDORES")}
+<br>
+<table>
+  <tr>
+    <th class="th-main">FECHA</th>
+    <th class="th-main">HORA DE<br>INGRESO</th>
+    <th class="th-main">HORA DE<br>SALIDA</th>
+    <th class="th-main">NOMBRE COMPLETO</th>
+    <th class="th-main">NÚMERO DE<br>DOCUMENTO</th>
+    <th class="th-main">TELÉFONO</th>
+    <th class="th-main">CARGO</th>
+    <th class="th-main">ÁREA QUE<br>VISITA</th>
+    <th class="th-main">MOTIVO DE<br>LA VISITA</th>
+    <th class="th-main">EMPRESA QUE<br>REPRESENTA</th>
+  </tr>
+  ${filas}
+  <tr>
+    <td class="clausula" colspan="10">
+      "Autorizo de manera previa, expresa e informada el tratamiento de mis datos personales conforme a la Ley 1581 de 2012 y demás normas concordantes, según la Política de Tratamiento de Datos Personales de la empresa."
+    </td>
+  </tr>
+</table>
+<div class="pie">
+  Alimento Energético Proteico S.A.S. · Corregimiento Puerto Caldas – Paraje La Marina – Planta ALEN+PRO<br>
+  Pereira – Risaralda | www.alenpro.co
+</div>
+</body></html>`;
+}
+
+/* ===== HTML ESTÁNDAR (otros documentos) ===== */
+function htmlEstandar(d,t){
+  const firmasHTML=t.f?`
+    <h2>CONTROL DE FIRMAS</h2>
+    <table><tr>${["ELABORÓ","REVISÓ","APROBÓ"].map((r,i)=>{
+      const n=[d.elabN,d.revN,d.aprN][i]||"_______________";
+      const c=[d.elabC,d.revC,d.aprC][i]||"";
+      return `<td style="text-align:center;padding:20px;width:33%"><b>${r}</b><br><br>${n}<br><small>${c}</small></td>`;
+    }).join("")}</tr></table>`:"";
+  const cambiosHTML=t.c?`
+    <h2>CONTROL DE CAMBIOS</h2>
+    <table>
+      <tr>
+        <th class="th-main">FECHA</th>
+        <th class="th-main">DESCRIPCIÓN DEL CAMBIO</th>
+        <th class="th-main">VERSIÓN</th>
+      </tr>
+      <tr>
+        <td style="text-align:center">${d.hoy}</td>
+        <td>Creación del documento</td>
+        <td style="text-align:center">${d.ver}</td>
+      </tr>
+    </table>`:"";
+
+  return `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<title>${d.codigo} · ${d.nombre}</title>
+<style>
+  body{font-family:Arial,sans-serif;font-size:10pt;margin:2cm;color:#000}
+  table{border-collapse:collapse;width:100%;margin-bottom:16px}
+  td,th{border:1px solid #000;padding:7px 10px;vertical-align:middle}
+  .enc-logo{width:100pt;text-align:center;vertical-align:middle}
+  .enc-logo img{width:80px}
+  .enc-empresa{text-align:center;font-weight:bold;font-size:12pt}
+  .enc-titulo{text-align:center;font-weight:bold;font-size:11pt}
+  .enc-dato{text-align:center}
+  .th-main{background:#d9d9d9;font-weight:bold;text-align:center}
+  h2{font-size:11pt;margin:20px 0 6px;font-family:Arial}
+  p.contenido{white-space:pre-wrap;font-size:10pt;margin:0 0 10px}
+  .pie{margin-top:40px;border-top:1px solid #000;padding-top:8px;text-align:center;font-size:8pt;color:#555}
+  @media print{body{margin:1.5cm}}
+</style></head><body>
+<table>
+  <tr>
+    <td class="enc-logo" rowspan="4"><img src="${LOGO_URI}" alt="ALEN+PRO"></td>
+    <td class="enc-empresa" colspan="2">ALIMENTO ENERGÉTICO PROTEICO S.A.S.</td>
+  </tr>
+  <tr><td class="enc-titulo" colspan="2">${d.nombre.toUpperCase()}</td></tr>
+  <tr>
+    <td class="enc-dato"><b>Código:</b> ${d.codigo}</td>
+    <td class="enc-dato"><b>Versión:</b> ${d.ver}</td>
+  </tr>
+  <tr>
+    <td class="enc-dato"><b>Fecha de aprobación:</b> ${d.fechaA||"MM-AAAA"}</td>
+    <td class="enc-dato"><b>Página:</b> 1 de 1</td>
+  </tr>
+</table>
+<h2>OBJETIVO</h2>
+<p class="contenido">${d.objetivo||"[Escriba aquí el objetivo del documento.]"}</p>
+<h2>ALCANCE</h2>
+<p class="contenido">${d.alcance||"[Defina el alcance del documento.]"}</p>
+<h2>DESARROLLO</h2>
+<p class="contenido">${d.desarrollo||"[Desarrolle el contenido aquí.]"}</p>
+${firmasHTML}${cambiosHTML}
+<div class="pie">
+  Alimento Energético Proteico S.A.S. · Corregimiento Puerto Caldas – Paraje La Marina – Planta ALEN+PRO<br>
+  Pereira – Risaralda | www.alenpro.co
+</div>
+</body></html>`;
+}
+
+/* ===== DESCARGAR HTML ===== */
+function descargar(html,nombre){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([html],{type:"text/html;charset=utf-8"}));
+  a.download=nombre; a.click();
+}
+
 /* ===== CATÁLOGOS ===== */
-const TIPOS = [
+const TIPOS=[
   {s:"ACT",n:"Acta",          f:false,c:false},
   {s:"BDD",n:"Base de datos", f:false,c:false},
   {s:"CIR",n:"Circular",      f:false,c:false},
@@ -175,8 +426,7 @@ const TIPOS = [
   {s:"PRO",n:"Procedimiento", f:true, c:true},
   {s:"PRT",n:"Protocolo",     f:true, c:true},
 ];
-
-const AREAS = [
+const AREAS=[
   {s:"AD",n:"Administración"},
   {s:"AM",n:"Ambiental"},
   {s:"CA",n:"Calidad"},
@@ -189,238 +439,152 @@ const AREAS = [
   {s:"TH",n:"Talento Humano"},
 ];
 
-/* ===== FIREBASE (con respaldo local) ===== */
-let modo = "local", fbDB = null;
-
+/* ===== FIREBASE ===== */
+let modo="local",fbDB=null;
 async function initFirebase(){
   try{
-    const {initializeApp} = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
-    const db = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js");
-    const app = initializeApp({databaseURL:"https://alenpro-inventario-default-rtdb.firebaseio.com"});
-    fbDB = {db:db.getDatabase(app),...db};
-    modo = "online";
-  }catch(e){ modo = "local"; }
-  const dot = document.getElementById("dot");
-  const txt = document.getElementById("connTxt");
-  dot.className = "dot " + (modo==="online"?"online":"local");
-  txt.textContent = modo==="online" ? "Firebase conectado" : "Modo local";
+    const {initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
+    const db=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js");
+    const app=initializeApp({databaseURL:"https://alenpro-inventario-default-rtdb.firebaseio.com"});
+    fbDB={db:db.getDatabase(app),...db}; modo="online";
+  }catch(e){modo="local";}
+  document.getElementById("dot").className="dot "+(modo==="online"?"online":"local");
+  document.getElementById("connTxt").textContent=modo==="online"?"Firebase conectado":"Modo local";
 }
-
 async function reservar(t,a){
-  const key = t+"-"+a;
+  const key=t+"-"+a;
   if(modo==="online"){
-    const ref = fbDB.ref(fbDB.db,"consecutivos/"+key);
-    const res = await fbDB.runTransaction(ref, v=>(v||0)+1);
+    const ref=fbDB.ref(fbDB.db,"consecutivos/"+key);
+    const res=await fbDB.runTransaction(ref,v=>(v||0)+1);
     return res.snapshot.val();
   }
-  const s = JSON.parse(localStorage.getItem("ap_consec")||"{}");
-  s[key] = (s[key]||0)+1;
-  localStorage.setItem("ap_consec",JSON.stringify(s));
-  return s[key];
+  const s=JSON.parse(localStorage.getItem("ap_consec")||"{}");
+  s[key]=(s[key]||0)+1; localStorage.setItem("ap_consec",JSON.stringify(s)); return s[key];
 }
-
 async function guardarReg(e){
   if(modo==="online") await fbDB.push(fbDB.ref(fbDB.db,"registro_documental"),e);
-  const r = JSON.parse(localStorage.getItem("ap_reg")||"[]");
-  r.unshift(e);
-  localStorage.setItem("ap_reg",JSON.stringify(r));
+  const r=JSON.parse(localStorage.getItem("ap_reg")||"[]");
+  r.unshift(e); localStorage.setItem("ap_reg",JSON.stringify(r));
 }
 
-/* ===== HELPERS ===== */
-const $ = id => document.getElementById(id);
-const tipoSel = () => TIPOS.find(t=>t.s===$("tipo").value);
-const areaSel = () => AREAS.find(a=>a.s===$("area").value);
+/* ===== UI ===== */
+const $=id=>document.getElementById(id);
+const tipoSel=()=>TIPOS.find(t=>t.s===$("tipo").value);
+const areaSel=()=>AREAS.find(a=>a.s===$("area").value);
+const esForSST=()=>tipoSel().s==="FOR"&&areaSel().s==="ST";
 
 function llenar(){
-  $("tipo").innerHTML = TIPOS.map(t=>`<option value="${t.s}">${t.s} · ${t.n}</option>`).join("");
-  $("area").innerHTML = AREAS.map(a=>`<option value="${a.s}">${a.s} · ${a.n}</option>`).join("");
+  $("tipo").innerHTML=TIPOS.map(t=>`<option value="${t.s}">${t.s} · ${t.n}</option>`).join("");
+  $("area").innerHTML=AREAS.map(a=>`<option value="${a.s}">${a.s} · ${a.n}</option>`).join("");
 }
-
+function actualizarUI(){
+  const t=tipoSel(),forSST=esForSST();
+  $("sstBox").style.display=forSST?"block":"none";
+  $("firmasCard").style.display=forSST?"none":"block";
+  $("contenidoCard").style.display=forSST?"none":"block";
+  const b=[];
+  if(t.f)b.push('<span class="badge">✔ firmas</span>');
+  if(t.c)b.push('<span class="badge">✔ cambios</span>');
+  if(forSST)b.push('<span class="badge">📋 HTML imprimible</span>');
+  $("badges").innerHTML=b.join("");
+  $("firmasNota").textContent=t.f?"Requiere bloque de firmas (Elaboró / Revisó / Aprobó).":"No requiere bloque de firmas formal.";
+}
 async function preview(){
-  const t = tipoSel(), a = areaSel();
-  const key = t.s+"-"+a.s;
-  let num = 1;
+  const t=tipoSel(),a=areaSel();
+  const key=t.s+"-"+a.s; let num=1;
   if(modo==="online"){
-    try{ const snap=await fbDB.get(fbDB.ref(fbDB.db,"consecutivos/"+key)); num=(snap.val()||0)+1; }catch(e){}
-  } else {
-    const s = JSON.parse(localStorage.getItem("ap_consec")||"{}");
-    num = (s[key]||0)+1;
-  }
-  const cod = `${t.s}-${a.s}-${String(num).padStart(3,"0")}`;
-  $("codigoBox").textContent = cod;
-  $("codigoSub").textContent = `${t.n} · ${a.n} · próximo número (no reservado aún)`;
-  const b = [];
-  if(t.f) b.push('<span class="badge">✔ control de firmas</span>');
-  if(t.c) b.push('<span class="badge">✔ control de cambios</span>');
-  $("badges").innerHTML = b.join("");
-  $("firmasNota").textContent = t.f
-    ? "Este tipo requiere bloque de firmas (Elaboró / Revisó / Aprobó)."
-    : "Este tipo no requiere bloque de firmas formal.";
+    try{const snap=await fbDB.get(fbDB.ref(fbDB.db,"consecutivos/"+key));num=(snap.val()||0)+1;}catch(e){}
+  }else{const s=JSON.parse(localStorage.getItem("ap_consec")||"{}");num=(s[key]||0)+1;}
+  const cod=`${t.s}-${a.s}-${String(num).padStart(3,"0")}`;
+  $("codigoBox").textContent=cod;
+  $("codigoSub").textContent=`${t.n} · ${a.n} · próximo número (no reservado aún)`;
+  actualizarUI();
 }
+function setEstado(msg,ok){const e=$("estado");e.textContent=msg;e.className="estado "+(ok?"ok":"err");}
 
-function setEstado(msg,ok){
-  const e=$("estado"); e.textContent=msg; e.className="estado "+(ok?"ok":"err");
-}
-
-/* ===== GENERACIÓN CSV (descarga el registro) ===== */
-function exportCSV(){
-  const reg = JSON.parse(localStorage.getItem("ap_reg")||"[]");
-  if(!reg.length){ alert("No hay documentos registrados aún."); return; }
-  const cols = ["codigo","nombre","tipo","area","ver","fechaA","ret","elaboro","reviso","aprobo","gen"];
-  const head = ["CODIGO","NOMBRE","TIPO","AREA","VERSION","FECHA APROBACION","RETENCION","ELABORO","REVISO","APROBO","FECHA GENERACION"];
-  const rows = reg.map(r=>cols.map(c=>`"${(r[c]||"").replace(/"/g,'""')}"`).join(","));
-  const csv = "\uFEFF"+head.join(",")+"\n"+rows.join("\n");
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
-  a.download = "registro_documental_alenpro.csv";
-  a.click();
-}
-
-/* ===== REGISTRO UI ===== */
+/* ===== REGISTRO ===== */
 function pintarReg(){
-  const reg = JSON.parse(localStorage.getItem("ap_reg")||"[]");
-  if(!reg.length){ $("regWrap").innerHTML='<p class="nota">Aún no se han generado documentos.</p>'; return; }
-  $("regWrap").innerHTML = `<table class="reg"><thead><tr>
+  const reg=JSON.parse(localStorage.getItem("ap_reg")||"[]");
+  if(!reg.length){$("regWrap").innerHTML='<p class="nota">Aún no se han generado documentos.</p>';return;}
+  $("regWrap").innerHTML=`<table class="reg"><thead><tr>
     <th>Código</th><th>Nombre</th><th>Tipo</th><th>Área</th><th>Ver.</th><th>Aprobación</th><th>Retención</th><th>Generado</th>
   </tr></thead><tbody>`+
-  reg.map(r=>`<tr>
-    <td class="code">${r.codigo}</td><td>${r.nombre}</td><td>${r.tipo}</td><td>${r.area}</td>
-    <td>${r.ver}</td><td>${r.fechaA||"—"}</td><td>${r.ret}</td><td>${r.gen}</td>
-  </tr>`).join("")+"</tbody></table>";
+  reg.map(r=>`<tr><td class="code">${r.codigo}</td><td>${r.nombre}</td><td>${r.tipo}</td><td>${r.area}</td>
+    <td>${r.ver}</td><td>${r.fechaA||"—"}</td><td>${r.ret}</td><td>${r.gen}</td></tr>`).join("")+"</tbody></table>";
+}
+function exportCSV(){
+  const reg=JSON.parse(localStorage.getItem("ap_reg")||"[]");
+  if(!reg.length){alert("No hay documentos registrados.");return;}
+  const cols=["codigo","nombre","tipo","area","ver","fechaA","ret","elaboro","reviso","aprobo","gen"];
+  const head=["CODIGO","NOMBRE","TIPO","AREA","VERSION","FECHA APROBACION","RETENCION","ELABORO","REVISO","APROBO","FECHA GENERACION"];
+  const rows=reg.map(r=>cols.map(c=>`"${(r[c]||"").replace(/"/g,'""')}"`).join(","));
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob(["\uFEFF"+head.join(",")+"\n"+rows.join("\n")],{type:"text/csv;charset=utf-8"}));
+  a.download="registro_documental_alenpro.csv"; a.click();
 }
 
-/* ===== GENERAR DOCUMENTO (descarga HTML imprimible) ===== */
+/* ===== GENERAR ===== */
 async function onGenerar(){
-  const nombre = $("nombre").value.trim();
-  if(!nombre){ setEstado("⚠ Escribe el nombre del documento.",false); return; }
-  $("btnGen").disabled = true;
-  setEstado("Reservando consecutivo…",true);
+  const nombre=$("nombre").value.trim();
+  if(!nombre){setEstado("⚠ Escribe el nombre del documento.",false);return;}
+  $("btnGen").disabled=true; setEstado("Reservando consecutivo…",true);
   try{
-    const t = tipoSel(), a = areaSel();
-    const num = await reservar(t.s,a.s);
-    const codigo = `${t.s}-${a.s}-${String(num).padStart(3,"0")}`;
-    const now = new Date();
-    const hoy = `${String(now.getDate()).padStart(2,"0")}-${String(now.getMonth()+1).padStart(2,"0")}-${now.getFullYear()}`;
-    const ver = $("version").value.trim()||"00";
-    const fechaA = $("fechaAprob").value.trim();
-    const elabN=$("elabN").value.trim(), elabC=$("elabC").value.trim();
-    const revN=$("revN").value.trim(),   revC=$("revC").value.trim();
-    const aprN=$("aprN").value.trim(),   aprC=$("aprC").value.trim();
+    const t=tipoSel(),a=areaSel();
+    const num=await reservar(t.s,a.s);
+    const codigo=`${t.s}-${a.s}-${String(num).padStart(3,"0")}`;
+    const now=new Date();
+    const hoy=`${String(now.getDate()).padStart(2,"0")}-${String(now.getMonth()+1).padStart(2,"0")}-${now.getFullYear()}`;
+    const ver=$("version").value.trim()||"00";
+    const fechaA=$("fechaAprob").value.trim();
+    const nombreLimpio=nombre.replace(/[^a-zA-ZáéíóúñÁÉÍÓÚÑ0-9 ]/g,"").replace(/\s+/g,"_");
 
-    const entry = {
-      codigo, nombre, tipo:t.n, area:a.n, ver, fechaA,
+    await guardarReg({
+      codigo,nombre,tipo:t.n,area:a.n,ver,fechaA,
       ret:$("retencion").value,
-      elaboro:[elabN,elabC].filter(Boolean).join(" / "),
-      reviso:[revN,revC].filter(Boolean).join(" / "),
-      aprobo:[aprN,aprC].filter(Boolean).join(" / "),
+      elaboro:[$("elabN").value.trim(),$("elabC").value.trim()].filter(Boolean).join(" / "),
+      reviso:[$("revN").value.trim(),$("revC").value.trim()].filter(Boolean).join(" / "),
+      aprobo:[$("aprN").value.trim(),$("aprC").value.trim()].filter(Boolean).join(" / "),
       gen:now.toLocaleString("es-CO")
-    };
-    await guardarReg(entry);
+    });
 
-    /* Genera HTML imprimible (sin dependencia externa) */
-    const firmasHTML = t.f ? `
-      <h3 style="margin-top:32px">CONTROL DE FIRMAS</h3>
-      <table style="width:100%;border-collapse:collapse">
-        <tr>
-          ${["ELABORÓ","REVISÓ","APROBÓ"].map((rol,i)=>{
-            const nom=[elabN,revN,aprN][i]||"_______________";
-            const car=[elabC,revC,aprC][i]||"";
-            return `<td style="border:1px solid #000;padding:16px 12px;text-align:center;width:33%">
-              <b>${rol}</b><br><br>${nom}<br><small>${car}</small></td>`;
-          }).join("")}
-        </tr>
-      </table>` : "";
-
-    const cambiosHTML = t.c ? `
-      <h3 style="margin-top:32px">CONTROL DE CAMBIOS</h3>
-      <table style="width:100%;border-collapse:collapse">
-        <tr>
-          <th style="border:1px solid #000;padding:8px;background:#fff6cc">FECHA</th>
-          <th style="border:1px solid #000;padding:8px;background:#fff6cc">DESCRIPCIÓN DEL CAMBIO</th>
-          <th style="border:1px solid #000;padding:8px;background:#fff6cc">VERSIÓN</th>
-        </tr>
-        <tr>
-          <td style="border:1px solid #000;padding:8px">${hoy}</td>
-          <td style="border:1px solid #000;padding:8px">Creación del documento</td>
-          <td style="border:1px solid #000;padding:8px;text-align:center">${ver}</td>
-        </tr>
-      </table>` : "";
-
-    const objetivo  = $("objetivo").value.trim()  || "[Escriba aquí el objetivo del documento.]";
-    const alcance   = $("alcance").value.trim()   || "[Defina el alcance del documento.]";
-    const desarrollo= $("desarrollo").value.trim()|| "[Desarrolle el contenido aquí.]";
-
-    const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
-<title>${codigo} · ${nombre}</title>
-<style>
-  body{font-family:Arial,sans-serif;font-size:12pt;margin:2cm;color:#000}
-  table.enc{width:100%;border-collapse:collapse;margin-bottom:24px}
-  table.enc td{border:1px solid #000;padding:8px 10px;vertical-align:middle}
-  .logo-cel{width:130pt;text-align:center;font-size:9pt;color:#999}
-  h2{font-size:13pt;margin:20px 0 6px}
-  h3{font-size:11pt;margin:20px 0 6px}
-  p{white-space:pre-wrap;margin:0 0 8px}
-  @media print{body{margin:1.5cm}}
-</style></head><body>
-<table class="enc">
-  <tr>
-    <td class="logo-cel" rowspan="4">[ LOGO<br>ALEN+PRO ]</td>
-    <td colspan="2" style="text-align:center;font-weight:bold">ALIMENTO ENERGÉTICO PROTEICO S.A.S.</td>
-  </tr>
-  <tr><td colspan="2" style="text-align:center;font-weight:bold">${nombre.toUpperCase()}</td></tr>
-  <tr>
-    <td>Código: <b>${codigo}</b></td>
-    <td>Versión: <b>${ver}</b></td>
-  </tr>
-  <tr>
-    <td>Fecha de aprobación: <b>${fechaA||"MM-AAAA"}</b></td>
-    <td>Página: _____ de _____</td>
-  </tr>
-</table>
-
-<h2>OBJETIVO</h2>
-<p>${objetivo}</p>
-
-<h2>ALCANCE</h2>
-<p>${alcance}</p>
-
-<h2>DESARROLLO</h2>
-<p>${desarrollo}</p>
-
-${firmasHTML}
-${cambiosHTML}
-
-<div style="margin-top:40px;border-top:1px solid #000;padding-top:8px;text-align:center;font-size:9pt;color:#555">
-  Alimento Energético Proteico S.A.S. · Corregimiento Puerto Caldas – Paraje La Marina – Planta ALEN+PRO<br>
-  Pereira – Risaralda | www.alenpro.co
-</div>
-</body></html>`;
-
-    const blob = new Blob([html],{type:"text/html;charset=utf-8"});
-    const urlB = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = urlB;
-    link.download = `${codigo}_${nombre.replace(/[^a-zA-ZáéíóúñÁÉÍÓÚÑ0-9 ]/g,"").replace(/\s+/g,"_")}.html`;
-    link.click();
-    URL.revokeObjectURL(urlB);
+    if(esForSST()){
+      const fmt=$("sstFormato").value;
+      if(fmt==="FOR017"){
+        descargar(htmlFOR017(codigo,ver,fechaA),`${codigo}_Registro_Visitantes_Proveedores.html`);
+      } else {
+        descargar(htmlFOR018(codigo,ver,fechaA),`${codigo}_Registro_Contratistas_Conductores.html`);
+      }
+      setEstado(`✓ ${codigo} generado. Ábrelo en el navegador y usa Ctrl+P para imprimir o guardar como PDF.`,true);
+    } else {
+      const d={
+        codigo,nombre,ver,fechaA,hoy,
+        objetivo:$("objetivo").value.trim(),
+        alcance:$("alcance").value.trim(),
+        desarrollo:$("desarrollo").value.trim(),
+        elabN:$("elabN").value.trim(),elabC:$("elabC").value.trim(),
+        revN:$("revN").value.trim(),revC:$("revC").value.trim(),
+        aprN:$("aprN").value.trim(),aprC:$("aprC").value.trim(),
+      };
+      descargar(htmlEstandar(d,t),`${codigo}_${nombreLimpio}.html`);
+      setEstado(`✓ ${codigo} generado. Ábrelo en Word o imprímelo desde el navegador.`,true);
+    }
 
     pintarReg();
-    $("codigoBox").textContent = codigo;
-    $("codigoSub").textContent = `✓ Reservado · ${t.n} · ${a.n}`;
-    setEstado(`✓ Documento ${codigo} generado. Ábrelo en Word o imprímelo desde el navegador.`,true);
+    $("codigoBox").textContent=codigo;
+    $("codigoSub").textContent=`✓ Reservado · ${t.n} · ${a.n}`;
     await preview();
-  }catch(err){ setEstado("Error: "+err.message,false); }
-  $("btnGen").disabled = false;
+  }catch(err){setEstado("Error: "+err.message,false);}
+  $("btnGen").disabled=false;
 }
 
 /* ===== INIT ===== */
-window.addEventListener("DOMContentLoaded", async ()=>{
+window.addEventListener("DOMContentLoaded",async()=>{
   llenar();
-  $("tipo").addEventListener("change", preview);
-  $("area").addEventListener("change", preview);
-  $("btnGen").addEventListener("click", onGenerar);
-  $("btnCsv").addEventListener("click", exportCSV);
-  $("btnClr").addEventListener("click",()=>{ localStorage.removeItem("ap_reg"); pintarReg(); });
+  $("tipo").addEventListener("change",preview);
+  $("area").addEventListener("change",preview);
+  $("btnGen").addEventListener("click",onGenerar);
+  $("btnCsv").addEventListener("click",exportCSV);
+  $("btnClr").addEventListener("click",()=>{localStorage.removeItem("ap_reg");pintarReg();});
   await initFirebase();
   await preview();
   pintarReg();
