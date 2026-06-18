@@ -230,7 +230,7 @@ function htmlEncabezado(codigo,ver,fechaA,titulo){
 
 /* ===== FOR-ST-018 · Contratistas y Conductores ===== */
 function htmlFOR018(codigo,ver,fechaA){
-  const filas=Array.from({length:10},(_,i)=>{
+  const filas=Array.from({length:6},(_,i)=>{
     const cls=i%2===0?"row-norm":"row-alt";
     return `<tr class="${cls}">
       <td class="dato"></td>
@@ -287,7 +287,7 @@ ${htmlEncabezado(codigo,ver,fechaA,"REGISTRO DE INGRESO E INDUCCIÓN CONTRATISTA
 
 /* ===== FOR-ST-017 · Visitantes y Proveedores ===== */
 function htmlFOR017(codigo,ver,fechaA){
-  const filas=Array.from({length:10},(_,i)=>{
+  const filas=Array.from({length:6},(_,i)=>{
     const cls=i%2===0?"row-norm":"row-alt";
     return `<tr class="${cls}">
       <td class="dato"></td>
