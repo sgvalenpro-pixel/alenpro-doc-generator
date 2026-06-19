@@ -27,7 +27,9 @@ body{font-family:Arial,Helvetica,sans-serif;background:#f4f4f2;color:#1a1a1a;fon
 .field textarea{resize:vertical}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-.codigo-display{background:#1a1a1a;color:#FFD400;font-size:26px;font-weight:700;text-align:center;padding:16px;border-radius:10px;letter-spacing:4px;font-family:'Courier New',monospace}
+.codigo-display{background:#1a1a1a;color:#FFD400;font-size:26px;font-weight:700;text-align:center;padding:16px;border-radius:10px;letter-spacing:4px;font-family:'Courier New',monospace;cursor:text;outline:none;transition:box-shadow .15s}
+.codigo-display:focus{box-shadow:0 0 0 3px #fff6cc;background:#2a2a2a}
+.codigo-display.editado{box-shadow:0 0 0 3px #ff9800}
 .codigo-sub{text-align:center;font-size:12px;color:#888;margin-top:8px}
 .badge{display:inline-block;background:#fff6cc;color:#7a5f00;border:1px solid #FFD400;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;margin:4px 2px}
 .badges{text-align:center;margin-top:6px}
@@ -108,9 +110,14 @@ table.reg td.code{font-family:'Courier New',monospace;font-weight:700}
 
   <div class="card">
     <div class="card-title">2 · Código asignado</div>
-    <div class="codigo-display" id="codigoBox">—</div>
+    <div class="codigo-display" id="codigoBox" contenteditable="true" spellcheck="false">—</div>
     <div class="codigo-sub" id="codigoSub">Selecciona tipo y área</div>
     <div class="badges" id="badges"></div>
+    <div class="row-btns" id="codigoEditBtns" style="display:none;justify-content:center">
+      <button class="btn-sec" id="btnGuardarCodigo">✓ Confirmar nuevo número</button>
+      <button class="btn-sec" id="btnCancelarCodigo">✕ Cancelar</button>
+    </div>
+    <p class="nota" style="text-align:center;margin-top:8px">Puedes editar el código manualmente (ej. corregir el consecutivo) haciendo clic sobre él.</p>
   </div>
 
   <div class="sst-box" id="sstBox">
@@ -452,6 +459,40 @@ const AREAS=[
 
 /* ===== FIREBASE ===== */
 let modo="local",fbDB=null;
+
+/* Consecutivos iniciales reales tomados de Google Drive (área SST) */
+const CONSECUTIVOS_INICIALES = {
+  "ACT-ST": 8,
+  "FOR-ST": 16,
+  "INS-ST": 1,
+  "PLA-ST": 2,
+  "POL-ST": 3,
+  "PRG-ST": 7,
+  "PRO-ST": 22,
+  "REG-ST": 2
+};
+
+async function precargarConsecutivos(){
+  if(modo==="online"){
+    for(const key in CONSECUTIVOS_INICIALES){
+      try{
+        const ref=fbDB.ref(fbDB.db,"consecutivos/"+key);
+        const snap=await fbDB.get(ref);
+        if(snap.val()===null){
+          await fbDB.set(ref, CONSECUTIVOS_INICIALES[key]);
+        }
+      }catch(e){}
+    }
+  } else {
+    const s=JSON.parse(localStorage.getItem("ap_consec")||"{}");
+    let changed=false;
+    for(const key in CONSECUTIVOS_INICIALES){
+      if(!(key in s)){ s[key]=CONSECUTIVOS_INICIALES[key]; changed=true; }
+    }
+    if(changed) localStorage.setItem("ap_consec",JSON.stringify(s));
+  }
+}
+
 async function initFirebase(){
   try{
     const {initializeApp}=await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js");
@@ -501,6 +542,9 @@ function actualizarUI(){
   $("firmasNota").textContent=t.f?"Requiere bloque de firmas (Elaboró / Revisó / Aprobó).":"No requiere bloque de firmas formal.";
 }
 async function preview(){
+  codigoOverride=null;
+  $("codigoBox").classList.remove("editado");
+  $("codigoEditBtns").style.display="none";
   const t=tipoSel(),a=areaSel();
   const key=t.s+"-"+a.s; let num=1;
   if(modo==="online"){
@@ -508,10 +552,53 @@ async function preview(){
   }else{const s=JSON.parse(localStorage.getItem("ap_consec")||"{}");num=(s[key]||0)+1;}
   const cod=`${t.s}-${a.s}-${String(num).padStart(3,"0")}`;
   $("codigoBox").textContent=cod;
+  iniciarEdicionCodigo();
   $("codigoSub").textContent=`${t.n} · ${a.n} · próximo número (no reservado aún)`;
   actualizarUI();
 }
 function setEstado(msg,ok){const e=$("estado");e.textContent=msg;e.className="estado "+(ok?"ok":"err");}
+
+/* ===== EDICIÓN MANUAL DEL CÓDIGO ===== */
+let codigoOriginal="";
+let codigoOverride=null; // si el usuario confirma un código manual, queda aquí hasta generar
+
+function iniciarEdicionCodigo(){
+  codigoOriginal=$("codigoBox").textContent.trim();
+}
+function detectarCambioCodigo(){
+  const actual=$("codigoBox").textContent.trim();
+  const cambio = actual!==codigoOriginal;
+  $("codigoBox").classList.toggle("editado",cambio);
+  $("codigoEditBtns").style.display = cambio ? "flex" : "none";
+}
+function validarFormatoCodigo(cod){
+  return /^[A-Z]{2,4}-[A-Z]{2}-\d{3}$/.test(cod);
+}
+function confirmarCodigoManual(){
+  const nuevo=$("codigoBox").textContent.trim().toUpperCase();
+  if(!validarFormatoCodigo(nuevo)){
+    alert("Formato inválido. Debe ser TTT-SS-000, por ejemplo PRO-CA-007.");
+    $("codigoBox").textContent=codigoOriginal;
+    detectarCambioCodigo();
+    return;
+  }
+  if(!confirm(`¿Confirmas usar el código ${nuevo} para este documento?\n\nEsto reemplazará el consecutivo automático.`)){
+    $("codigoBox").textContent=codigoOriginal;
+    detectarCambioCodigo();
+    return;
+  }
+  codigoOverride=nuevo;
+  $("codigoBox").textContent=nuevo;
+  $("codigoBox").classList.remove("editado");
+  $("codigoEditBtns").style.display="none";
+  $("codigoSub").textContent="✓ Código fijado manualmente — se usará tal cual al generar";
+  setEstado(`Código ajustado manualmente a ${nuevo}. Quedará reservado así al generar el documento.`,true);
+}
+function cancelarEdicionCodigo(){
+  $("codigoBox").textContent=codigoOriginal;
+  $("codigoBox").classList.remove("editado");
+  $("codigoEditBtns").style.display="none";
+}
 
 /* ===== REGISTRO ===== */
 function pintarReg(){
@@ -541,8 +628,26 @@ async function onGenerar(){
   $("btnGen").disabled=true; setEstado("Reservando consecutivo…",true);
   try{
     const t=tipoSel(),a=areaSel();
-    const num=await reservar(t.s,a.s);
-    const codigo=`${t.s}-${a.s}-${String(num).padStart(3,"0")}`;
+    let codigo;
+    if(codigoOverride){
+      // usar el código fijado manualmente, y sincronizar el consecutivo para que no se repita
+      codigo=codigoOverride;
+      const partes=codigo.split("-");
+      const numManual=parseInt(partes[2],10);
+      const key=t.s+"-"+a.s;
+      if(modo==="online"){
+        const ref=fbDB.ref(fbDB.db,"consecutivos/"+key);
+        const snap=await fbDB.get(ref);
+        const actual=snap.val()||0;
+        if(numManual>actual) await fbDB.set(ref,numManual);
+      }else{
+        const s=JSON.parse(localStorage.getItem("ap_consec")||"{}");
+        if(numManual>(s[key]||0)){ s[key]=numManual; localStorage.setItem("ap_consec",JSON.stringify(s)); }
+      }
+    } else {
+      const num=await reservar(t.s,a.s);
+      codigo=`${t.s}-${a.s}-${String(num).padStart(3,"0")}`;
+    }
     const now=new Date();
     const hoy=`${String(now.getDate()).padStart(2,"0")}-${String(now.getMonth()+1).padStart(2,"0")}-${now.getFullYear()}`;
     const ver=$("version").value.trim()||"00";
@@ -581,6 +686,7 @@ async function onGenerar(){
     }
 
     pintarReg();
+    codigoOverride=null;
     $("codigoBox").textContent=codigo;
     $("codigoSub").textContent=`✓ Reservado · ${t.n} · ${a.n}`;
     await preview();
@@ -593,10 +699,18 @@ window.addEventListener("DOMContentLoaded",async()=>{
   llenar();
   $("tipo").addEventListener("change",preview);
   $("area").addEventListener("change",preview);
+  $("codigoBox").addEventListener("input",detectarCambioCodigo);
+  $("codigoBox").addEventListener("blur",()=>{
+    // si quedó vacío al perder foco, restaurar
+    if(!$("codigoBox").textContent.trim()) $("codigoBox").textContent=codigoOriginal;
+  });
+  $("btnGuardarCodigo").addEventListener("click",confirmarCodigoManual);
+  $("btnCancelarCodigo").addEventListener("click",cancelarEdicionCodigo);
   $("btnGen").addEventListener("click",onGenerar);
   $("btnCsv").addEventListener("click",exportCSV);
   $("btnClr").addEventListener("click",()=>{localStorage.removeItem("ap_reg");pintarReg();});
   await initFirebase();
+  await precargarConsecutivos();
   await preview();
   pintarReg();
 });
