@@ -472,78 +472,63 @@ const AREAS=[
   {s:"TH",n:"Talento Humano"},
 ];
 
-/* ========== DIRECTORIO DE UBICACIÓN EN DRIVE (a nivel de subcarpeta) ========== */
+/* ========== DIRECTORIO DE UBICACIÓN EN DRIVE (solo vigentes 2026, a nivel de subcarpeta) ========== */
 const DIRECTORIO = [
-  // ---- SST: carpeta reglamentaria (procedimientos/programas/políticas/reglamentos) ----
-  {area:"SST", tipo:"PRO-ST", carpeta:"DOCUMENTACION REGLAMENTARIA SG-SST",
-   url:"https://drive.google.com/drive/folders/1kvzOjehKG-utPqvBwUPlHwMoZpx2QQNV",
-   nota:"Todos los PRO-ST (001 a 022) están sueltos en esta carpeta, sin subcarpetas.", ultimo:"PRO-ST-022"},
-  {area:"SST", tipo:"PRG-ST", carpeta:"DOCUMENTACION REGLAMENTARIA SG-SST",
-   url:"https://drive.google.com/drive/folders/1kvzOjehKG-utPqvBwUPlHwMoZpx2QQNV",
-   nota:"Programas (caídas, pausas activas, biomecánico, auditiva).", ultimo:"PRG-ST-007"},
-  {area:"SST", tipo:"POL-ST / REG-ST / INS-ST", carpeta:"DOCUMENTACION REGLAMENTARIA SG-SST",
-   url:"https://drive.google.com/drive/folders/1kvzOjehKG-utPqvBwUPlHwMoZpx2QQNV",
-   nota:"Políticas (alcohol, SST, objetivos), Reglamento de Higiene, Instructivo SST.", ultimo:"POL-ST-003 / REG-ST-001 / INS-ST-001"},
-  // ---- SST: carpeta 01 SG_SST 2026 (actas y formatos recientes, por numeral) ----
-  {area:"SST", tipo:"ACT-ST · 1.1.1 Responsable", carpeta:"01 SG_SST 2026 › 1.1.1 Responsable del SG SST",
-   url:"https://drive.google.com/drive/folders/1mj0o1VMHGKPIeVIpHLaqyZ07XBoDEbm-",
-   nota:"ACT-ST-001 + licencia, diploma y certificados del responsable SST.", ultimo:"ACT-ST-001"},
-  {area:"SST", tipo:"ACT-ST · 1.1.2 Responsabilidades", carpeta:"01 SG_SST 2026 › 1.1.2 Responsabilidades SG_SST",
-   url:"https://drive.google.com/drive/folders/1GCHJfgAAz9FmxGgy5VZwiRvoMv3ck1oB",
-   nota:"ACT-ST-002.", ultimo:"ACT-ST-002"},
-  {area:"SST", tipo:"ACT/FOR-ST · 1.1.3 Recursos", carpeta:"01 SG_SST 2026 › 1.1.3 Asignación de recursos SG_SST",
-   url:"https://drive.google.com/drive/folders/1md54_I-ubcjhviYda0nZT2aDfAkLJBb4",
-   nota:"ACT-ST-003 (Asignación recursos), PLA-ST-001 (Plan de compras).", ultimo:"ACT-ST-003 / PLA-ST-001"},
-  {area:"SST", tipo:"ACT/FOR-ST · 1.1.6 COPASST", carpeta:"01 SG_SST 2026 › 1.1.6 Conformación COPASST",
-   url:"https://drive.google.com/drive/folders/1RfGkPP9yNcSs5Hv6PRlPOadPu0WpBk4w",
-   nota:"FOR-ST-010/011/012, ACT-ST-004/005/006 (conformación y reuniones COPASST).", ultimo:"ACT-ST-006 / FOR-ST-012"},
-  {area:"SST", tipo:"ACT/FOR-ST · 1.1.8 Convivencia Laboral", carpeta:"01 SG_SST 2026 › 1.1.8 Comité Convivencia Laboral",
-   url:"https://drive.google.com/drive/folders/12VMmytp4kSmBsWR8tcAHIR2-Ggv6arDz",
-   nota:"FOR-ST-014/015/016, ACT-ST-007/008, REG-ST-002, CAP-ST-005 (no estándar).", ultimo:"ACT-ST-008 / FOR-ST-016"},
-  {area:"SST", tipo:"RGE/CAP-ST · 1.1.7 Capacitación COPASST", carpeta:"01 SG_SST 2026 › 1.1.7 Capacitación Integrantes COPASST",
-   url:"https://drive.google.com/drive/folders/1yR9XcihyHIVQSrkk3Wu7JIhPGuIrgF1i",
-   nota:"⚠ Usa siglas no estándar: RGE-ST y CAP-ST (evaluaciones y presentaciones de capacitación).", ultimo:"RGE-ST-003 / CAP-ST-005"},
+  // ---- SST (consolidado, igual que las demás áreas) ----
+  {area:"SST", tipo:"ACT-ST / FOR-ST / POL-TH / RGE-ST / CAP-ST", carpeta:"01 SG_SST 2026 (raíz)",
+   url:"https://drive.google.com/drive/folders/1dfGR0xxndaT148z3yc9wpowHILLeH060",
+   nota:"Organizada por numeral del estándar: 1.1.1 Responsable, 1.1.2 Responsabilidades, 1.1.3 Recursos, 1.1.6 COPASST, 1.1.7 Capacitación COPASST (⚠ usa RGE-ST/CAP-ST), 1.1.8 Convivencia Laboral.", ultimo:"ACT-ST-008",
+   claves:"sst responsable copasst comite paritario convivencia laboral cocola acoso licencia capacitacion induccion votacion tarjeton acoso sexual",
+   documentos:"Acta de Asignación Responsable SG_SST; Acta Asignación Responsabilidades SG_SST; Acta Asignación de Recursos en SST; Plan de compras SG_SST; Acta conformación COPASST; Acta Reunión COPASST; Inscripción Aspirantes COPASST; Convocatoria Conformación COPASST; Tarjetón de Voto COPASST; Acta conformación Comité Convivencia Laboral; Acta Reunión Comité Convivencia Laboral; Inscripción Aspirantes Comité Convivencia Laboral; Convocatoria Comité Convivencia Laboral; Presentación de Quejas Comité Convivencia Laboral; Reglamento Comité Convivencia Laboral; Política de Prevención y Atención del Acoso Sexual en el Trabajo; Evaluación capacitación Investigación de ATEL; Evaluación Capacitación Identificación y Valoración de Riesgos; Evaluación y Capacitación Funciones y Responsabilidades; Capacitación Accidentes de Trabajo; Capacitación Investigación AT; Identificación y Valoración de Riesgos Laborales; Funciones y responsabilidades COPASST; Inducción COPASST; Inducción Comité de Convivencia Laboral"},
   // ---- Mantenimiento ----
   {area:"Mantenimiento", tipo:"FOR-MT / INV-MT / PRG-MT", carpeta:"SIGAP › MANTENIMIENTO (raíz)",
    url:"https://drive.google.com/drive/folders/11-oas7mXu8KSUCi-87swt7jPZTTgSSES",
-   nota:"FOR-MT-004/005/006, INV-MT-001/002, PRG-MT-001 sueltos en la raíz. Subcarpetas: ALMACEN, ELECTRICO, MECANICO, HOJAS DE VIDA EXTRUSIÓN/EXTRACCIÓN.", ultimo:"FOR-MT-006"},
-  // ---- Calidad ----
-  {area:"Calidad", tipo:"MAT-ME", carpeta:"SIGAP › CALIDAD › Control Material Extraño",
-   url:"https://drive.google.com/drive/folders/1_QXnHWS8393TP4NdUWlWob_IzDXM3nsl",
-   nota:"MAT-ME-001. Tiene subcarpetas por año (2025/2026).", ultimo:"MAT-ME-001"},
-  {area:"Calidad", tipo:"FT-GC / FTP-IN (no estándar)", carpeta:"SIGAP › CALIDAD › Fichas Tecnicas",
-   url:"https://drive.google.com/drive/folders/1UodUnshw3gz7KAOFm9I5IGhGQ2YbtPAd",
-   nota:"⚠ Fichas técnicas de producto/materia prima usan FT-GC-001 o FTP-IN-001 según el caso — no siguen el catálogo de 16 tipos.", ultimo:"FT-GC-001 / FTP-IN-001"},
-  {area:"Calidad", tipo:"Registros / Análisis (sin codificar)", carpeta:"SIGAP › CALIDAD › Registros Control Calidad / Análisis Agua",
-   url:"https://drive.google.com/drive/folders/12wn4Y4rnHqy3CLawESQptymvv4wOOyuq",
-   nota:"Carpetas organizadas por año y por producto (TS, etc.), sin código TTT-SS visible.", ultimo:"—"},
+   nota:"FOR-MT-004/005/006, INV-MT-001/002, PRG-MT-001. Subcarpetas: ALMACEN, ELECTRICO, MECANICO, hojas de vida equipos.", ultimo:"FOR-MT-006",
+   claves:"mantenimiento herramientas maquinaria equipos fallas proyectos inventario almacen",
+   documentos:"Seguimiento Fallas; Formato Gestión de Proyectos; Formato Solicitud Servicio y Recursos; Inventario Herramientas Área Mantenimiento; Inventario de Maquinaria y Equipos; Programa de Mantenimiento"},
   // ---- Comercial ----
-  {area:"Comercial", tipo:"POL-CO / FOR-CO", carpeta:"SIGAP › COMERCIAL (raíz / Creacion clientes)",
+  {area:"Comercial", tipo:"POL-CO / FOR-CO", carpeta:"SIGAP › COMERCIAL › Creacion clientes",
    url:"https://drive.google.com/drive/folders/1bU4VDrI5yV5TX-8CHWa2q6ttCRUUtfne",
-   nota:"POL-CO-001 (2 versiones), FOR-CO-001. Revisar también subcarpeta VENTAS.", ultimo:"POL-CO-002 / FOR-CO-001"},
+   nota:"POL-CO-001/002 (política comercial y de crédito, ene-2026), FOR-CO-001 (vinculación clientes).", ultimo:"POL-CO-002 / FOR-CO-001",
+   claves:"comercial credito cartera cliente vinculacion politica pago factura",
+   documentos:"Política Comercial; Política Comercial Clientes; Formato de actualización o vinculación de cliente"},
   // ---- Contabilidad (siglas no estándar) ----
   {area:"Contabilidad", tipo:"AEA-AF / ABI-AF (no estándar)", carpeta:"SIGAP › CONTABILIDAD › ACTIVOS FIJOS",
    url:"https://drive.google.com/drive/folders/1Ntpv8lgfH2NCrMWx8vLUTc2ORvc7fesn",
-   nota:"⚠ Acta Entrega (AEA-AF-01) y Acta de Baja (ABI-AF-001) de activos fijos.", ultimo:"AEA-AF-01 / ABI-AF-001"},
-  {area:"Contabilidad", tipo:"Certificados retención (sin codificar)", carpeta:"SIGAP › CONTABILIDAD › CERTIFICADO RET.FUENTE",
-   url:"https://drive.google.com/drive/folders/18TfzVP05r-0vjEQunD0hzd-Rs8lDthQU",
-   nota:"Certificados anuales por proveedor/empleado, no llevan código TTT-SS.", ultimo:"—"},
-  // ---- Carpetas raíz por si se necesita explorar más ----
+   nota:"⚠ Acta Entrega (AEA-AF-01) y Acta de Baja (ABI-AF-001) — entregas marzo 2026.", ultimo:"AEA-AF-01 / ABI-AF-001",
+   claves:"activos fijos entrega baja radio kenwood responsabilidad",
+   documentos:"Acta de Entrega de Activos Fijos; Acta de Baja de Activos Fijos"},
+  // ---- Carpetas raíz por área (sin códigos confirmados en 2026, dejadas como punto de partida) ----
   {area:"Administración", tipo:"(explorar)", carpeta:"SIGAP › ADMINISTRACION",
    url:"https://drive.google.com/drive/folders/10gaw_SGkIRm2Fzt6lsBoUWWXLXQ6smak",
-   nota:"Permisos, cumplimiento administrativo. No se hallaron códigos TTT-SS en la revisión.", ultimo:"—"},
+   nota:"Permisos, cumplimiento administrativo.", ultimo:"—",
+   claves:"administracion permisos cumplimiento proteccion datos",
+   documentos:"Bienvenida SIGAP; PERMISOS A+P; PROTECCION DE DATOS SIC"},
+  {area:"Calidad", tipo:"(explorar)", carpeta:"SIGAP › CALIDAD (raíz)",
+   url:"https://drive.google.com/drive/folders/10l4Y_n6QscbLovqisSXPiG5dcbIp0Oym",
+   nota:"Subcarpetas con datos 2026: Registros Control Calidad, Análisis Agua (carpeta interna '2026').", ultimo:"—",
+   claves:"calidad registros analisis agua laboratorio fichas tecnicas material extraño",
+   documentos:"Registros Control Calidad; Análisis Calidad Agua; Inventario de laboratorio; Matriz de control de material extraño; Fichas Técnicas"},
   {area:"Gerencia", tipo:"(explorar)", carpeta:"SIGAP › GERENCIA",
    url:"https://drive.google.com/drive/folders/11OKh5Hg0_VTYVhDSOMyp2PAqxXZHvx4N",
-   nota:"Presupuestos y modelos financieros. No se hallaron códigos TTT-SS en la revisión.", ultimo:"—"},
-  {area:"Ambiental", tipo:"(explorar)", carpeta:"SIGAP › CONTROL AMBIENTAL",
-   url:"https://drive.google.com/drive/folders/12T_BI8fVZUHhPWd0VdoOnCPzFDKMVAIO",
-   nota:"Subcarpetas: SISTEMA DE GESTION AMBIENTAL 2025 / 2026.", ultimo:"—"},
+   nota:"Presupuestos y modelos financieros.", ultimo:"—",
+   claves:"gerencia presupuesto financiero precio internacional",
+   documentos:"Presupuesto 2023; Modelo Normativo 1.3; Seguimiento Precio Internacional; Cotización equipos ATEINDUS"},
+  {area:"Ambiental", tipo:"(explorar)", carpeta:"SIGAP › CONTROL AMBIENTAL › SISTEMA DE GESTION AMBIENTAL 2026",
+   url:"https://drive.google.com/drive/folders/1hwkPfEK0_etRy7lEazDn7ArEIQPqVb0O",
+   nota:"Carpeta específica del año vigente.", ultimo:"—",
+   claves:"ambiental gestion residuos sga",
+   documentos:"Sistema de Gestión Ambiental 2026"},
   {area:"Talento Humano", tipo:"(explorar)", carpeta:"SIGAP › TALENTO HUMANO",
    url:"https://drive.google.com/drive/folders/10lgfXFhCTVA8eALF6SNA_e7mL89pgKJe",
-   nota:"Subcarpetas: BANCO HOJAS DE VIDA, CONTROL DOCUMENTAL, AUSENTISMO, ENCUESTAS.", ultimo:"—"},
+   nota:"Subcarpetas: BANCO HOJAS DE VIDA, CONTROL DOCUMENTAL, AUSENTISMO, ENCUESTAS.", ultimo:"—",
+   claves:"talento humano hojas de vida ausentismo encuestas reclutamiento",
+   documentos:"Banco Hojas de Vida; Control Documental; Ausentismo; Encuestas; Misión Visión Objetivos; Google Sites"},
   {area:"General", tipo:"Carpeta madre", carpeta:"SIGAP (raíz)",
    url:"https://drive.google.com/drive/folders/10x1f9qljkebMOSMwuQSEVQYw-NtjpGu2",
-   nota:"Punto de partida — desde aquí se navega a todas las áreas.", ultimo:"—"},
+   nota:"Punto de partida — desde aquí se navega a todas las áreas.", ultimo:"—",
+   claves:"sigap indice general todas las areas",
+   documentos:"Bienvenida SIGAP"},
 ];
 
 function llenarDirectorio(){
@@ -556,21 +541,31 @@ function llenarDirectorio(){
 function pintarDirectorio(){
   const filtro=$("dirFiltro").value;
   const busq=($("dirBuscar")?.value||"").trim().toUpperCase();
-  const filas=DIRECTORIO.filter(d=>
-    (!filtro||d.area===filtro) &&
-    (!busq || d.tipo.toUpperCase().includes(busq) || d.ultimo.toUpperCase().includes(busq) || d.carpeta.toUpperCase().includes(busq))
-  );
+  const filas=DIRECTORIO.filter(d=>{
+    if(filtro && d.area!==filtro) return false;
+    if(!busq) return true;
+    const campo=(d.tipo+" "+d.ultimo+" "+d.carpeta+" "+d.nota+" "+(d.claves||"")+" "+(d.documentos||"")).toUpperCase();
+    return campo.includes(busq);
+  });
   if(!filas.length){
     $("dirTbody").innerHTML='<tr><td colspan="5" class="nota" style="text-align:center;padding:14px">Sin resultados para esa búsqueda.</td></tr>';
     return;
   }
-  $("dirTbody").innerHTML=filas.map(d=>`<tr>
+  $("dirTbody").innerHTML=filas.map(d=>{
+    const busq2=($("dirBuscar")?.value||"").trim();
+    let docsHTML="";
+    if(busq2 && d.documentos){
+      const coincide=d.documentos.split(";").map(s=>s.trim()).filter(doc=>doc.toUpperCase().includes(busq2.toUpperCase()));
+      if(coincide.length) docsHTML=`<div style="margin-top:4px;font-size:11px;color:#7a5f00">📄 ${coincide.join(" · ")}</div>`;
+    }
+    return `<tr>
     <td><b>${d.area}</b></td>
     <td style="font-family:monospace;font-size:11px">${d.tipo}</td>
     <td><a href="${d.url}" target="_blank" rel="noopener" style="color:#1a1a1a;font-weight:700;text-decoration:underline">${d.carpeta} ↗</a></td>
-    <td>${d.nota}</td>
+    <td>${d.nota}${docsHTML}</td>
     <td style="font-family:monospace;font-size:11px;white-space:nowrap">${d.ultimo}</td>
-  </tr>`).join("");
+  </tr>`;
+  }).join("");
 }
 
 /* ========== FIREBASE ========== */
