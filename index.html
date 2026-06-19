@@ -17,7 +17,7 @@ body{font-family:Arial,Helvetica,sans-serif;background:#f4f4f2;color:#1a1a1a;fon
 .conn{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;white-space:nowrap}
 .dot{width:8px;height:8px;border-radius:50%;background:#888;flex:0 0 auto}
 .dot.online{background:#4caf50}.dot.local{background:#ff9800}
-.main{max-width:820px;margin:0 auto;padding:20px 16px 40px}
+.main{max-width:860px;margin:0 auto;padding:20px 16px 40px}
 .card{background:#fff;border:1px solid #ddd;border-radius:12px;padding:20px;margin-bottom:16px}
 .card-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#555;border-bottom:2px solid #FFD400;padding-bottom:8px;margin-bottom:16px}
 .field{margin-bottom:14px}
@@ -44,7 +44,7 @@ body{font-family:Arial,Helvetica,sans-serif;background:#f4f4f2;color:#1a1a1a;fon
 .tbl-wrap{overflow-x:auto}
 table.reg{width:100%;border-collapse:collapse;font-size:12px;min-width:580px}
 table.reg th{background:#fff6cc;font-size:11px;text-transform:uppercase;padding:7px 8px;border:1px solid #ddd;text-align:left}
-table.reg td{padding:6px 8px;border:1px solid #ddd}
+table.reg td{padding:6px 8px;border:1px solid #ddd;vertical-align:top}
 table.reg td.code{font-family:'Courier New',monospace;font-weight:700}
 .row-btns{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
 .btn-sec{padding:9px 14px;background:#fff;color:#444;border:1.5px solid #ccc;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:Arial}
@@ -175,23 +175,50 @@ table.reg td.code{font-family:'Courier New',monospace;font-weight:700}
     </div>
   </div>
 
-</div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-title">6 · 📂 Dónde encontrar los documentos en Drive</div>
+    <p class="nota" style="margin-bottom:12px">Directorio de referencia — útil si eres nuevo en la empresa o no sabes en qué carpeta vive cada tipo de documento codificado.</p>
+    <div class="field">
+      <label>Filtrar por área</label>
+      <select id="dirFiltro">
+        <option value="">Todas las áreas</option>
+      </select>
+    </div>
+    <div class="tbl-wrap">
+      <table class="reg" id="dirTabla">
+        <thead><tr><th>Área</th><th>Carpeta principal</th><th>Subcarpeta / notas</th><th>Códigos vistos ahí</th></tr></thead>
+        <tbody id="dirTbody"></tbody>
+      </table>
+    </div>
+    <p class="nota" style="margin-top:10px">⚠ Este directorio se construyó a partir de una revisión manual de Drive (jun-2026) y puede no estar 100% actualizado. Si no encuentras un documento, pregunta al responsable del área.</p>
+  </div>
+
+  <details style="margin-top:8px">
+    <summary>⚙ Notas técnicas</summary>
+    <div class="card" style="margin-top:10px">
+      <p class="nota">
+        <b>Firebase:</b> proyecto <code>alenpro-inventario</code>. Si no conecta, opera en modo local (localStorage del navegador).<br>
+        <b>Logo:</b> reemplaza la celda <code>[LOGO]</code> en Word con la cruz oficial de ALEN+PRO.<br>
+        <b>Consecutivos:</b> se cuentan por combinación Tipo-Área (ej. PRO-CA → PRO-CA-001, PRO-CA-002…).
+      </p>
+    </div>
+  </details>
+
+</div><!-- /main -->
 
 <script>
-/* ===== LOGO SVG (cruz amarilla, fondo blanco) ===== */
+/* ========== LOGO SVG ========== */
 const LOGO_SVG=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 230">
   <rect width="220" height="230" fill="white"/>
-  <!-- Cruz -->
   <rect x="76" y="6" width="52" height="182" rx="24" fill="#FFD400"/>
   <rect x="6" y="76" width="182" height="52" rx="24" fill="#FFD400"/>
-  <!-- Texto ALEN+PRO -->
   <text x="108" y="210" font-family="Arial" font-size="18" font-weight="bold" fill="#1a1a1a" text-anchor="middle" letter-spacing="1">ALEN</text>
   <text x="148" y="210" font-family="Arial" font-size="18" font-weight="bold" fill="#FFD400" text-anchor="middle">+</text>
   <text x="178" y="210" font-family="Arial" font-size="18" font-weight="bold" fill="#1a1a1a" text-anchor="middle" letter-spacing="1">PRO</text>
 </svg>`;
 const LOGO_URI="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(LOGO_SVG);
 
-/* ===== ESTILOS HTML COMPARTIDOS ===== */
+/* ========== ESTILOS HTML COMPARTIDOS PARA FORMATOS SST ========== */
 const CSS_FORMATO=`
   body{font-family:Arial,sans-serif;font-size:9.5pt;margin:1.5cm;color:#000}
   table{border-collapse:collapse;width:100%}
@@ -216,7 +243,6 @@ const CSS_FORMATO=`
   @media print{body{margin:0}}
 `;
 
-/* ===== ENCABEZADO COMPARTIDO ===== */
 function htmlEncabezado(codigo,ver,fechaA,titulo){
   return `<table>
     <tr>
@@ -235,21 +261,13 @@ function htmlEncabezado(codigo,ver,fechaA,titulo){
   </table>`;
 }
 
-/* ===== FOR-ST-018 · Contratistas y Conductores ===== */
 function htmlFOR018(codigo,ver,fechaA){
   const filas=Array.from({length:8},(_,i)=>{
     const cls=i%2===0?"row-norm":"row-alt";
     return `<tr class="${cls}">
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
+      <td class="dato"></td><td class="dato"></td><td class="dato"></td><td class="dato"></td>
+      <td class="dato"></td><td class="dato"></td><td class="dato"></td><td class="dato"></td>
+      <td class="dato"></td><td class="dato"></td>
     </tr>`;
   }).join("");
 
@@ -259,7 +277,7 @@ function htmlFOR018(codigo,ver,fechaA){
   body{margin:1cm}
   table{table-layout:fixed}
   td,th{font-size:8.5pt}
-  td.dato{height:26pt}
+  td.dato{height:18pt}
 </style>
 </head><body>
 ${htmlEncabezado(codigo,ver,fechaA,"REGISTRO DE INGRESO E INDUCCIÓN CONTRATISTAS Y CONDUCTORES")}
@@ -292,21 +310,13 @@ ${htmlEncabezado(codigo,ver,fechaA,"REGISTRO DE INGRESO E INDUCCIÓN CONTRATISTA
 </body></html>`;
 }
 
-/* ===== FOR-ST-017 · Visitantes y Proveedores ===== */
 function htmlFOR017(codigo,ver,fechaA){
   const filas=Array.from({length:8},(_,i)=>{
     const cls=i%2===0?"row-norm":"row-alt";
     return `<tr class="${cls}">
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
-      <td class="dato"></td>
+      <td class="dato"></td><td class="dato"></td><td class="dato"></td><td class="dato"></td>
+      <td class="dato"></td><td class="dato"></td><td class="dato"></td><td class="dato"></td>
+      <td class="dato"></td><td class="dato"></td>
     </tr>`;
   }).join("");
 
@@ -316,7 +326,7 @@ function htmlFOR017(codigo,ver,fechaA){
   body{margin:1cm}
   table{table-layout:fixed}
   td,th{font-size:8.5pt}
-  td.dato{height:26pt}
+  td.dato{height:18pt}
 </style>
 </head><body>
 ${htmlEncabezado(codigo,ver,fechaA,"REGISTRO DE INGRESO DE VISITANTES Y PROVEEDORES")}
@@ -348,7 +358,6 @@ ${htmlEncabezado(codigo,ver,fechaA,"REGISTRO DE INGRESO DE VISITANTES Y PROVEEDO
 </body></html>`;
 }
 
-/* ===== HTML ESTÁNDAR (otros documentos) ===== */
 function htmlEstandar(d,t){
   const firmasHTML=t.f?`
     <h2>CONTROL DE FIRMAS</h2>
@@ -379,7 +388,7 @@ function htmlEstandar(d,t){
   table{border-collapse:collapse;width:100%;margin-bottom:16px}
   td,th{border:1px solid #000;padding:7px 10px;vertical-align:middle}
   .enc-logo{width:100pt;text-align:center;vertical-align:middle}
-  .enc-logo img{width:80px}
+  .enc-logo img{width:80px;display:block;margin:0 auto}
   .enc-empresa{text-align:center;font-weight:bold;font-size:12pt}
   .enc-titulo{text-align:center;font-weight:bold;font-size:11pt}
   .enc-dato{text-align:center}
@@ -418,14 +427,13 @@ ${firmasHTML}${cambiosHTML}
 </body></html>`;
 }
 
-/* ===== DESCARGAR HTML ===== */
 function descargar(html,nombre){
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([html],{type:"text/html;charset=utf-8"}));
   a.download=nombre; a.click();
 }
 
-/* ===== CATÁLOGOS ===== */
+/* ========== CATÁLOGOS ========== */
 const TIPOS=[
   {s:"ACT",n:"Acta",          f:false,c:false},
   {s:"BDD",n:"Base de datos", f:false,c:false},
@@ -458,27 +466,57 @@ const AREAS=[
   {s:"TH",n:"Talento Humano"},
 ];
 
-/* ===== FIREBASE ===== */
+/* ========== DIRECTORIO DE UBICACIÓN EN DRIVE ========== */
+const DIRECTORIO = [
+  {area:"SST", carpeta:"01 SG_SST 2026", url:"https://drive.google.com/drive/folders/1dfGR0xxndaT148z3yc9wpowHILLeH060",
+   nota:"Organizada por numeral del estándar (1.1.1, 2.1.1…). Actas, formatos y registros recientes.", codigos:"ACT-ST, FOR-ST (recientes)"},
+  {area:"SST", carpeta:"DOCUMENTACION REGLAMENTARIA SG-SST", url:"https://drive.google.com/drive/folders/1kvzOjehKG-utPqvBwUPlHwMoZpx2QQNV",
+   nota:"Procedimientos, programas, políticas y reglamentos base del sistema.", codigos:"PRO-ST, PRG-ST, POL-ST, REG-ST, INS-ST"},
+  {area:"Mantenimiento", carpeta:"SIGAP › MANTENIMIENTO", url:"https://drive.google.com/drive/folders/11-oas7mXu8KSUCi-87swt7jPZTTgSSES",
+   nota:"Incluye subcarpetas: ALMACEN, ELECTRICO, MECANICO, hojas de vida de equipos.", codigos:"FOR-MT, INV-MT, PRG-MT"},
+  {area:"Calidad", carpeta:"SIGAP › CALIDAD", url:"https://drive.google.com/drive/folders/10l4Y_n6QscbLovqisSXPiG5dcbIp0Oym",
+   nota:"Subcarpetas: Registros Control Calidad, Análisis Agua, Fichas Técnicas, Control Material Extraño.", codigos:"MAT-ME, FT/FTP (no estándar)"},
+  {area:"Comercial", carpeta:"SIGAP › COMERCIAL", url:"https://drive.google.com/drive/folders/10icOtJL2Ega76UJeEeptUPV8QrkQWIAV",
+   nota:"Subcarpetas: VENTAS (políticas y formatos), Creación clientes, Documentación clientes.", codigos:"POL-CO, FOR-CO"},
+  {area:"Administración", carpeta:"SIGAP › ADMINISTRACION", url:"https://drive.google.com/drive/folders/10gaw_SGkIRm2Fzt6lsBoUWWXLXQ6smak",
+   nota:"Permisos, cumplimiento administrativo.", codigos:"—"},
+  {area:"Contabilidad", carpeta:"SIGAP › CONTABILIDAD", url:"https://drive.google.com/drive/folders/10kFX57o1xCKQ_9ppeIH09Qimv5SZgaPB",
+   nota:"Certificados retención, activos fijos.", codigos:"AEA-AF, ABI-AF (no estándar)"},
+  {area:"Gerencia", carpeta:"SIGAP › GERENCIA", url:"https://drive.google.com/drive/folders/11OKh5Hg0_VTYVhDSOMyp2PAqxXZHvx4N",
+   nota:"Presupuestos, modelos financieros, cotizaciones de equipos.", codigos:"—"},
+  {area:"Ambiental", carpeta:"SIGAP › CONTROL AMBIENTAL", url:"https://drive.google.com/drive/folders/12T_BI8fVZUHhPWd0VdoOnCPzFDKMVAIO",
+   nota:"Sistema de Gestión Ambiental 2025/2026.", codigos:"—"},
+  {area:"Talento Humano", carpeta:"SIGAP › TALENTO HUMANO", url:"https://drive.google.com/drive/folders/10lgfXFhCTVA8eALF6SNA_e7mL89pgKJe",
+   nota:"Hojas de vida, control documental, ausentismo, encuestas.", codigos:"—"},
+  {area:"General", carpeta:"SIGAP (raíz)", url:"https://drive.google.com/drive/folders/10x1f9qljkebMOSMwuQSEVQYw-NtjpGu2",
+   nota:"Carpeta madre — desde aquí se accede a todas las áreas.", codigos:"—"},
+];
+
+function llenarDirectorio(){
+  const areasUnicas=[...new Set(DIRECTORIO.map(d=>d.area))];
+  $("dirFiltro").innerHTML='<option value="">Todas las áreas</option>'+
+    areasUnicas.map(a=>`<option value="${a}">${a}</option>`).join("");
+  pintarDirectorio();
+}
+function pintarDirectorio(){
+  const filtro=$("dirFiltro").value;
+  const filas=DIRECTORIO.filter(d=>!filtro||d.area===filtro);
+  $("dirTbody").innerHTML=filas.map(d=>`<tr>
+    <td><b>${d.area}</b></td>
+    <td><a href="${d.url}" target="_blank" rel="noopener" style="color:#1a1a1a;font-weight:700;text-decoration:underline">${d.carpeta} ↗</a></td>
+    <td>${d.nota}</td>
+    <td style="font-family:monospace;font-size:11px">${d.codigos}</td>
+  </tr>`).join("");
+}
+
+/* ========== FIREBASE ========== */
 let modo="local",fbDB=null;
 
-/* Consecutivos iniciales reales tomados de Google Drive (todas las áreas revisadas) */
 const CONSECUTIVOS_INICIALES = {
-  // SST
-  "ACT-ST": 8,
-  "FOR-ST": 16,
-  "INS-ST": 1,
-  "PLA-ST": 2,
-  "POL-ST": 3,
-  "PRG-ST": 7,
-  "PRO-ST": 22,
-  "REG-ST": 2,
-  // Mantenimiento
-  "FOR-MT": 6,
-  "INV-MT": 2,
-  "PRG-MT": 1,
-  // Comercial
-  "POL-CO": 2,
-  "FOR-CO": 1,
+  "ACT-ST": 8, "FOR-ST": 16, "INS-ST": 1, "PLA-ST": 2, "POL-ST": 3,
+  "PRG-ST": 7, "PRO-ST": 22, "REG-ST": 2,
+  "FOR-MT": 6, "INV-MT": 2, "PRG-MT": 1,
+  "POL-CO": 2, "FOR-CO": 1,
 };
 
 async function precargarConsecutivos(){
@@ -487,9 +525,7 @@ async function precargarConsecutivos(){
       try{
         const ref=fbDB.ref(fbDB.db,"consecutivos/"+key);
         const snap=await fbDB.get(ref);
-        if(snap.val()===null){
-          await fbDB.set(ref, CONSECUTIVOS_INICIALES[key]);
-        }
+        if(snap.val()===null) await fbDB.set(ref, CONSECUTIVOS_INICIALES[key]);
       }catch(e){}
     }
   } else {
@@ -528,7 +564,7 @@ async function guardarReg(e){
   r.unshift(e); localStorage.setItem("ap_reg",JSON.stringify(r));
 }
 
-/* ===== UI ===== */
+/* ========== UI ========== */
 const $=id=>document.getElementById(id);
 const tipoSel=()=>TIPOS.find(t=>t.s===$("tipo").value);
 const areaSel=()=>AREAS.find(a=>a.s===$("area").value);
@@ -550,26 +586,9 @@ function actualizarUI(){
   $("badges").innerHTML=b.join("");
   $("firmasNota").textContent=t.f?"Requiere bloque de firmas (Elaboró / Revisó / Aprobó).":"No requiere bloque de firmas formal.";
 }
-async function preview(){
-  codigoOverride=null;
-  $("codigoBox").classList.remove("editado");
-  $("codigoEditBtns").style.display="none";
-  const t=tipoSel(),a=areaSel();
-  const key=t.s+"-"+a.s; let num=1;
-  if(modo==="online"){
-    try{const snap=await fbDB.get(fbDB.ref(fbDB.db,"consecutivos/"+key));num=(snap.val()||0)+1;}catch(e){}
-  }else{const s=JSON.parse(localStorage.getItem("ap_consec")||"{}");num=(s[key]||0)+1;}
-  const cod=`${t.s}-${a.s}-${String(num).padStart(3,"0")}`;
-  $("codigoBox").textContent=cod;
-  iniciarEdicionCodigo();
-  $("codigoSub").textContent=`${t.n} · ${a.n} · próximo número (no reservado aún)`;
-  actualizarUI();
-}
-function setEstado(msg,ok){const e=$("estado");e.textContent=msg;e.className="estado "+(ok?"ok":"err");}
 
-/* ===== EDICIÓN MANUAL DEL CÓDIGO ===== */
 let codigoOriginal="";
-let codigoOverride=null; // si el usuario confirma un código manual, queda aquí hasta generar
+let codigoOverride=null;
 
 function iniciarEdicionCodigo(){
   codigoOriginal=$("codigoBox").textContent.trim();
@@ -601,7 +620,6 @@ function confirmarCodigoManual(){
   $("codigoBox").classList.remove("editado");
   $("codigoEditBtns").style.display="none";
   $("codigoSub").textContent="✓ Código fijado manualmente — se usará tal cual al generar";
-  setEstado(`Código ajustado manualmente a ${nuevo}. Quedará reservado así al generar el documento.`,true);
 }
 function cancelarEdicionCodigo(){
   $("codigoBox").textContent=codigoOriginal;
@@ -609,7 +627,24 @@ function cancelarEdicionCodigo(){
   $("codigoEditBtns").style.display="none";
 }
 
-/* ===== REGISTRO ===== */
+async function preview(){
+  codigoOverride=null;
+  $("codigoBox").classList.remove("editado");
+  $("codigoEditBtns").style.display="none";
+  const t=tipoSel(),a=areaSel();
+  const key=t.s+"-"+a.s; let num=1;
+  if(modo==="online"){
+    try{const snap=await fbDB.get(fbDB.ref(fbDB.db,"consecutivos/"+key));num=(snap.val()||0)+1;}catch(e){}
+  }else{const s=JSON.parse(localStorage.getItem("ap_consec")||"{}");num=(s[key]||0)+1;}
+  const cod=`${t.s}-${a.s}-${String(num).padStart(3,"0")}`;
+  $("codigoBox").textContent=cod;
+  iniciarEdicionCodigo();
+  $("codigoSub").textContent=`${t.n} · ${a.n} · próximo número (no reservado aún)`;
+  actualizarUI();
+}
+function setEstado(msg,ok){const e=$("estado");e.textContent=msg;e.className="estado "+(ok?"ok":"err");}
+
+/* ========== REGISTRO ========== */
 function pintarReg(){
   const reg=JSON.parse(localStorage.getItem("ap_reg")||"[]");
   if(!reg.length){$("regWrap").innerHTML='<p class="nota">Aún no se han generado documentos.</p>';return;}
@@ -630,7 +665,7 @@ function exportCSV(){
   a.download="registro_documental_alenpro.csv"; a.click();
 }
 
-/* ===== GENERAR ===== */
+/* ========== GENERAR ========== */
 async function onGenerar(){
   const nombre=$("nombre").value.trim();
   if(!nombre){setEstado("⚠ Escribe el nombre del documento.",false);return;}
@@ -639,7 +674,6 @@ async function onGenerar(){
     const t=tipoSel(),a=areaSel();
     let codigo;
     if(codigoOverride){
-      // usar el código fijado manualmente, y sincronizar el consecutivo para que no se repita
       codigo=codigoOverride;
       const partes=codigo.split("-");
       const numManual=parseInt(partes[2],10);
@@ -657,6 +691,7 @@ async function onGenerar(){
       const num=await reservar(t.s,a.s);
       codigo=`${t.s}-${a.s}-${String(num).padStart(3,"0")}`;
     }
+
     const now=new Date();
     const hoy=`${String(now.getDate()).padStart(2,"0")}-${String(now.getMonth()+1).padStart(2,"0")}-${now.getFullYear()}`;
     const ver=$("version").value.trim()||"00";
@@ -703,7 +738,7 @@ async function onGenerar(){
   $("btnGen").disabled=false;
 }
 
-/* ===== INIT ===== */
+/* ========== INIT ========== */
 window.addEventListener("DOMContentLoaded",async()=>{
   llenar();
   llenarDirectorio();
@@ -712,7 +747,6 @@ window.addEventListener("DOMContentLoaded",async()=>{
   $("area").addEventListener("change",preview);
   $("codigoBox").addEventListener("input",detectarCambioCodigo);
   $("codigoBox").addEventListener("blur",()=>{
-    // si quedó vacío al perder foco, restaurar
     if(!$("codigoBox").textContent.trim()) $("codigoBox").textContent=codigoOriginal;
   });
   $("btnGuardarCodigo").addEventListener("click",confirmarCodigoManual);
