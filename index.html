@@ -177,16 +177,22 @@ table.reg td.code{font-family:'Courier New',monospace;font-weight:700}
 
   <div class="card" style="margin-top:16px">
     <div class="card-title">6 · 📂 Dónde encontrar los documentos en Drive</div>
-    <p class="nota" style="margin-bottom:12px">Directorio de referencia — útil si eres nuevo en la empresa o no sabes en qué carpeta vive cada tipo de documento codificado.</p>
-    <div class="field">
-      <label>Filtrar por área</label>
-      <select id="dirFiltro">
-        <option value="">Todas las áreas</option>
-      </select>
+    <p class="nota" style="margin-bottom:12px">Directorio de referencia a nivel de subcarpeta — útil si eres nuevo en la empresa o no sabes dónde vive cada tipo de documento codificado.</p>
+    <div class="grid2">
+      <div class="field">
+        <label>Filtrar por área</label>
+        <select id="dirFiltro">
+          <option value="">Todas las áreas</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Buscar código o palabra clave</label>
+        <input type="text" id="dirBuscar" placeholder="Ej. PRO-ST, COPASST, activos fijos…">
+      </div>
     </div>
     <div class="tbl-wrap">
       <table class="reg" id="dirTabla">
-        <thead><tr><th>Área</th><th>Carpeta principal</th><th>Subcarpeta / notas</th><th>Códigos vistos ahí</th></tr></thead>
+        <thead><tr><th>Área</th><th>Tipo / código</th><th>Carpeta</th><th>Notas</th><th>Último código visto</th></tr></thead>
         <tbody id="dirTbody"></tbody>
       </table>
     </div>
@@ -466,30 +472,78 @@ const AREAS=[
   {s:"TH",n:"Talento Humano"},
 ];
 
-/* ========== DIRECTORIO DE UBICACIÓN EN DRIVE ========== */
+/* ========== DIRECTORIO DE UBICACIÓN EN DRIVE (a nivel de subcarpeta) ========== */
 const DIRECTORIO = [
-  {area:"SST", carpeta:"01 SG_SST 2026", url:"https://drive.google.com/drive/folders/1dfGR0xxndaT148z3yc9wpowHILLeH060",
-   nota:"Organizada por numeral del estándar (1.1.1, 2.1.1…). Actas, formatos y registros recientes.", codigos:"ACT-ST, FOR-ST (recientes)"},
-  {area:"SST", carpeta:"DOCUMENTACION REGLAMENTARIA SG-SST", url:"https://drive.google.com/drive/folders/1kvzOjehKG-utPqvBwUPlHwMoZpx2QQNV",
-   nota:"Procedimientos, programas, políticas y reglamentos base del sistema.", codigos:"PRO-ST, PRG-ST, POL-ST, REG-ST, INS-ST"},
-  {area:"Mantenimiento", carpeta:"SIGAP › MANTENIMIENTO", url:"https://drive.google.com/drive/folders/11-oas7mXu8KSUCi-87swt7jPZTTgSSES",
-   nota:"Incluye subcarpetas: ALMACEN, ELECTRICO, MECANICO, hojas de vida de equipos.", codigos:"FOR-MT, INV-MT, PRG-MT"},
-  {area:"Calidad", carpeta:"SIGAP › CALIDAD", url:"https://drive.google.com/drive/folders/10l4Y_n6QscbLovqisSXPiG5dcbIp0Oym",
-   nota:"Subcarpetas: Registros Control Calidad, Análisis Agua, Fichas Técnicas, Control Material Extraño.", codigos:"MAT-ME, FT/FTP (no estándar)"},
-  {area:"Comercial", carpeta:"SIGAP › COMERCIAL", url:"https://drive.google.com/drive/folders/10icOtJL2Ega76UJeEeptUPV8QrkQWIAV",
-   nota:"Subcarpetas: VENTAS (políticas y formatos), Creación clientes, Documentación clientes.", codigos:"POL-CO, FOR-CO"},
-  {area:"Administración", carpeta:"SIGAP › ADMINISTRACION", url:"https://drive.google.com/drive/folders/10gaw_SGkIRm2Fzt6lsBoUWWXLXQ6smak",
-   nota:"Permisos, cumplimiento administrativo.", codigos:"—"},
-  {area:"Contabilidad", carpeta:"SIGAP › CONTABILIDAD", url:"https://drive.google.com/drive/folders/10kFX57o1xCKQ_9ppeIH09Qimv5SZgaPB",
-   nota:"Certificados retención, activos fijos.", codigos:"AEA-AF, ABI-AF (no estándar)"},
-  {area:"Gerencia", carpeta:"SIGAP › GERENCIA", url:"https://drive.google.com/drive/folders/11OKh5Hg0_VTYVhDSOMyp2PAqxXZHvx4N",
-   nota:"Presupuestos, modelos financieros, cotizaciones de equipos.", codigos:"—"},
-  {area:"Ambiental", carpeta:"SIGAP › CONTROL AMBIENTAL", url:"https://drive.google.com/drive/folders/12T_BI8fVZUHhPWd0VdoOnCPzFDKMVAIO",
-   nota:"Sistema de Gestión Ambiental 2025/2026.", codigos:"—"},
-  {area:"Talento Humano", carpeta:"SIGAP › TALENTO HUMANO", url:"https://drive.google.com/drive/folders/10lgfXFhCTVA8eALF6SNA_e7mL89pgKJe",
-   nota:"Hojas de vida, control documental, ausentismo, encuestas.", codigos:"—"},
-  {area:"General", carpeta:"SIGAP (raíz)", url:"https://drive.google.com/drive/folders/10x1f9qljkebMOSMwuQSEVQYw-NtjpGu2",
-   nota:"Carpeta madre — desde aquí se accede a todas las áreas.", codigos:"—"},
+  // ---- SST: carpeta reglamentaria (procedimientos/programas/políticas/reglamentos) ----
+  {area:"SST", tipo:"PRO-ST", carpeta:"DOCUMENTACION REGLAMENTARIA SG-SST",
+   url:"https://drive.google.com/drive/folders/1kvzOjehKG-utPqvBwUPlHwMoZpx2QQNV",
+   nota:"Todos los PRO-ST (001 a 022) están sueltos en esta carpeta, sin subcarpetas.", ultimo:"PRO-ST-022"},
+  {area:"SST", tipo:"PRG-ST", carpeta:"DOCUMENTACION REGLAMENTARIA SG-SST",
+   url:"https://drive.google.com/drive/folders/1kvzOjehKG-utPqvBwUPlHwMoZpx2QQNV",
+   nota:"Programas (caídas, pausas activas, biomecánico, auditiva).", ultimo:"PRG-ST-007"},
+  {area:"SST", tipo:"POL-ST / REG-ST / INS-ST", carpeta:"DOCUMENTACION REGLAMENTARIA SG-SST",
+   url:"https://drive.google.com/drive/folders/1kvzOjehKG-utPqvBwUPlHwMoZpx2QQNV",
+   nota:"Políticas (alcohol, SST, objetivos), Reglamento de Higiene, Instructivo SST.", ultimo:"POL-ST-003 / REG-ST-001 / INS-ST-001"},
+  // ---- SST: carpeta 01 SG_SST 2026 (actas y formatos recientes, por numeral) ----
+  {area:"SST", tipo:"ACT-ST · 1.1.1 Responsable", carpeta:"01 SG_SST 2026 › 1.1.1 Responsable del SG SST",
+   url:"https://drive.google.com/drive/folders/1mj0o1VMHGKPIeVIpHLaqyZ07XBoDEbm-",
+   nota:"ACT-ST-001 + licencia, diploma y certificados del responsable SST.", ultimo:"ACT-ST-001"},
+  {area:"SST", tipo:"ACT-ST · 1.1.2 Responsabilidades", carpeta:"01 SG_SST 2026 › 1.1.2 Responsabilidades SG_SST",
+   url:"https://drive.google.com/drive/folders/1GCHJfgAAz9FmxGgy5VZwiRvoMv3ck1oB",
+   nota:"ACT-ST-002.", ultimo:"ACT-ST-002"},
+  {area:"SST", tipo:"ACT/FOR-ST · 1.1.3 Recursos", carpeta:"01 SG_SST 2026 › 1.1.3 Asignación de recursos SG_SST",
+   url:"https://drive.google.com/drive/folders/1md54_I-ubcjhviYda0nZT2aDfAkLJBb4",
+   nota:"ACT-ST-003 (Asignación recursos), PLA-ST-001 (Plan de compras).", ultimo:"ACT-ST-003 / PLA-ST-001"},
+  {area:"SST", tipo:"ACT/FOR-ST · 1.1.6 COPASST", carpeta:"01 SG_SST 2026 › 1.1.6 Conformación COPASST",
+   url:"https://drive.google.com/drive/folders/1RfGkPP9yNcSs5Hv6PRlPOadPu0WpBk4w",
+   nota:"FOR-ST-010/011/012, ACT-ST-004/005/006 (conformación y reuniones COPASST).", ultimo:"ACT-ST-006 / FOR-ST-012"},
+  {area:"SST", tipo:"ACT/FOR-ST · 1.1.8 Convivencia Laboral", carpeta:"01 SG_SST 2026 › 1.1.8 Comité Convivencia Laboral",
+   url:"https://drive.google.com/drive/folders/12VMmytp4kSmBsWR8tcAHIR2-Ggv6arDz",
+   nota:"FOR-ST-014/015/016, ACT-ST-007/008, REG-ST-002, CAP-ST-005 (no estándar).", ultimo:"ACT-ST-008 / FOR-ST-016"},
+  {area:"SST", tipo:"RGE/CAP-ST · 1.1.7 Capacitación COPASST", carpeta:"01 SG_SST 2026 › 1.1.7 Capacitación Integrantes COPASST",
+   url:"https://drive.google.com/drive/folders/1yR9XcihyHIVQSrkk3Wu7JIhPGuIrgF1i",
+   nota:"⚠ Usa siglas no estándar: RGE-ST y CAP-ST (evaluaciones y presentaciones de capacitación).", ultimo:"RGE-ST-003 / CAP-ST-005"},
+  // ---- Mantenimiento ----
+  {area:"Mantenimiento", tipo:"FOR-MT / INV-MT / PRG-MT", carpeta:"SIGAP › MANTENIMIENTO (raíz)",
+   url:"https://drive.google.com/drive/folders/11-oas7mXu8KSUCi-87swt7jPZTTgSSES",
+   nota:"FOR-MT-004/005/006, INV-MT-001/002, PRG-MT-001 sueltos en la raíz. Subcarpetas: ALMACEN, ELECTRICO, MECANICO, HOJAS DE VIDA EXTRUSIÓN/EXTRACCIÓN.", ultimo:"FOR-MT-006"},
+  // ---- Calidad ----
+  {area:"Calidad", tipo:"MAT-ME", carpeta:"SIGAP › CALIDAD › Control Material Extraño",
+   url:"https://drive.google.com/drive/folders/1_QXnHWS8393TP4NdUWlWob_IzDXM3nsl",
+   nota:"MAT-ME-001. Tiene subcarpetas por año (2025/2026).", ultimo:"MAT-ME-001"},
+  {area:"Calidad", tipo:"FT-GC / FTP-IN (no estándar)", carpeta:"SIGAP › CALIDAD › Fichas Tecnicas",
+   url:"https://drive.google.com/drive/folders/1UodUnshw3gz7KAOFm9I5IGhGQ2YbtPAd",
+   nota:"⚠ Fichas técnicas de producto/materia prima usan FT-GC-001 o FTP-IN-001 según el caso — no siguen el catálogo de 16 tipos.", ultimo:"FT-GC-001 / FTP-IN-001"},
+  {area:"Calidad", tipo:"Registros / Análisis (sin codificar)", carpeta:"SIGAP › CALIDAD › Registros Control Calidad / Análisis Agua",
+   url:"https://drive.google.com/drive/folders/12wn4Y4rnHqy3CLawESQptymvv4wOOyuq",
+   nota:"Carpetas organizadas por año y por producto (TS, etc.), sin código TTT-SS visible.", ultimo:"—"},
+  // ---- Comercial ----
+  {area:"Comercial", tipo:"POL-CO / FOR-CO", carpeta:"SIGAP › COMERCIAL (raíz / Creacion clientes)",
+   url:"https://drive.google.com/drive/folders/1bU4VDrI5yV5TX-8CHWa2q6ttCRUUtfne",
+   nota:"POL-CO-001 (2 versiones), FOR-CO-001. Revisar también subcarpeta VENTAS.", ultimo:"POL-CO-002 / FOR-CO-001"},
+  // ---- Contabilidad (siglas no estándar) ----
+  {area:"Contabilidad", tipo:"AEA-AF / ABI-AF (no estándar)", carpeta:"SIGAP › CONTABILIDAD › ACTIVOS FIJOS",
+   url:"https://drive.google.com/drive/folders/1Ntpv8lgfH2NCrMWx8vLUTc2ORvc7fesn",
+   nota:"⚠ Acta Entrega (AEA-AF-01) y Acta de Baja (ABI-AF-001) de activos fijos.", ultimo:"AEA-AF-01 / ABI-AF-001"},
+  {area:"Contabilidad", tipo:"Certificados retención (sin codificar)", carpeta:"SIGAP › CONTABILIDAD › CERTIFICADO RET.FUENTE",
+   url:"https://drive.google.com/drive/folders/18TfzVP05r-0vjEQunD0hzd-Rs8lDthQU",
+   nota:"Certificados anuales por proveedor/empleado, no llevan código TTT-SS.", ultimo:"—"},
+  // ---- Carpetas raíz por si se necesita explorar más ----
+  {area:"Administración", tipo:"(explorar)", carpeta:"SIGAP › ADMINISTRACION",
+   url:"https://drive.google.com/drive/folders/10gaw_SGkIRm2Fzt6lsBoUWWXLXQ6smak",
+   nota:"Permisos, cumplimiento administrativo. No se hallaron códigos TTT-SS en la revisión.", ultimo:"—"},
+  {area:"Gerencia", tipo:"(explorar)", carpeta:"SIGAP › GERENCIA",
+   url:"https://drive.google.com/drive/folders/11OKh5Hg0_VTYVhDSOMyp2PAqxXZHvx4N",
+   nota:"Presupuestos y modelos financieros. No se hallaron códigos TTT-SS en la revisión.", ultimo:"—"},
+  {area:"Ambiental", tipo:"(explorar)", carpeta:"SIGAP › CONTROL AMBIENTAL",
+   url:"https://drive.google.com/drive/folders/12T_BI8fVZUHhPWd0VdoOnCPzFDKMVAIO",
+   nota:"Subcarpetas: SISTEMA DE GESTION AMBIENTAL 2025 / 2026.", ultimo:"—"},
+  {area:"Talento Humano", tipo:"(explorar)", carpeta:"SIGAP › TALENTO HUMANO",
+   url:"https://drive.google.com/drive/folders/10lgfXFhCTVA8eALF6SNA_e7mL89pgKJe",
+   nota:"Subcarpetas: BANCO HOJAS DE VIDA, CONTROL DOCUMENTAL, AUSENTISMO, ENCUESTAS.", ultimo:"—"},
+  {area:"General", tipo:"Carpeta madre", carpeta:"SIGAP (raíz)",
+   url:"https://drive.google.com/drive/folders/10x1f9qljkebMOSMwuQSEVQYw-NtjpGu2",
+   nota:"Punto de partida — desde aquí se navega a todas las áreas.", ultimo:"—"},
 ];
 
 function llenarDirectorio(){
@@ -500,12 +554,21 @@ function llenarDirectorio(){
 }
 function pintarDirectorio(){
   const filtro=$("dirFiltro").value;
-  const filas=DIRECTORIO.filter(d=>!filtro||d.area===filtro);
+  const busq=($("dirBuscar")?.value||"").trim().toUpperCase();
+  const filas=DIRECTORIO.filter(d=>
+    (!filtro||d.area===filtro) &&
+    (!busq || d.tipo.toUpperCase().includes(busq) || d.ultimo.toUpperCase().includes(busq) || d.carpeta.toUpperCase().includes(busq))
+  );
+  if(!filas.length){
+    $("dirTbody").innerHTML='<tr><td colspan="5" class="nota" style="text-align:center;padding:14px">Sin resultados para esa búsqueda.</td></tr>';
+    return;
+  }
   $("dirTbody").innerHTML=filas.map(d=>`<tr>
     <td><b>${d.area}</b></td>
+    <td style="font-family:monospace;font-size:11px">${d.tipo}</td>
     <td><a href="${d.url}" target="_blank" rel="noopener" style="color:#1a1a1a;font-weight:700;text-decoration:underline">${d.carpeta} ↗</a></td>
     <td>${d.nota}</td>
-    <td style="font-family:monospace;font-size:11px">${d.codigos}</td>
+    <td style="font-family:monospace;font-size:11px;white-space:nowrap">${d.ultimo}</td>
   </tr>`).join("");
 }
 
@@ -743,6 +806,7 @@ window.addEventListener("DOMContentLoaded",async()=>{
   llenar();
   llenarDirectorio();
   $("dirFiltro").addEventListener("change",pintarDirectorio);
+  $("dirBuscar").addEventListener("input",pintarDirectorio);
   $("tipo").addEventListener("change",preview);
   $("area").addEventListener("change",preview);
   $("codigoBox").addEventListener("input",detectarCambioCodigo);
