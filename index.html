@@ -547,7 +547,8 @@ const DIRECTORIO = [
 ];
 
 function llenarDirectorio(){
-  const areasUnicas=[...new Set(DIRECTORIO.map(d=>d.area))];
+  DIRECTORIO.sort((a,b)=> a.area.localeCompare(b.area,"es") || a.tipo.localeCompare(b.tipo,"es"));
+  const areasUnicas=[...new Set(DIRECTORIO.map(d=>d.area))].sort((a,b)=>a.localeCompare(b,"es"));
   $("dirFiltro").innerHTML='<option value="">Todas las áreas</option>'+
     areasUnicas.map(a=>`<option value="${a}">${a}</option>`).join("");
   pintarDirectorio();
