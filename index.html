@@ -451,6 +451,7 @@ const AREAS=[
   {s:"CO",n:"Comercial"},
   {s:"CT",n:"Contabilidad"},
   {s:"GG",n:"Gerencia"},
+  {s:"MT",n:"Mantenimiento"},
   {s:"PL",n:"Planeación"},
   {s:"PR",n:"Producción"},
   {s:"ST",n:"SST"},
@@ -460,8 +461,9 @@ const AREAS=[
 /* ===== FIREBASE ===== */
 let modo="local",fbDB=null;
 
-/* Consecutivos iniciales reales tomados de Google Drive (área SST) */
+/* Consecutivos iniciales reales tomados de Google Drive (todas las áreas revisadas) */
 const CONSECUTIVOS_INICIALES = {
+  // SST
   "ACT-ST": 8,
   "FOR-ST": 16,
   "INS-ST": 1,
@@ -469,7 +471,14 @@ const CONSECUTIVOS_INICIALES = {
   "POL-ST": 3,
   "PRG-ST": 7,
   "PRO-ST": 22,
-  "REG-ST": 2
+  "REG-ST": 2,
+  // Mantenimiento
+  "FOR-MT": 6,
+  "INV-MT": 2,
+  "PRG-MT": 1,
+  // Comercial
+  "POL-CO": 2,
+  "FOR-CO": 1,
 };
 
 async function precargarConsecutivos(){
