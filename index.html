@@ -706,6 +706,8 @@ async function onGenerar(){
 /* ===== INIT ===== */
 window.addEventListener("DOMContentLoaded",async()=>{
   llenar();
+  llenarDirectorio();
+  $("dirFiltro").addEventListener("change",pintarDirectorio);
   $("tipo").addEventListener("change",preview);
   $("area").addEventListener("change",preview);
   $("codigoBox").addEventListener("input",detectarCambioCodigo);
