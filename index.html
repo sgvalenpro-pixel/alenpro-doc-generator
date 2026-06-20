@@ -186,13 +186,14 @@ table.reg td.code{font-family:'Courier New',monospace;font-weight:700}
         </select>
       </div>
       <div class="field">
-        <label>Buscar código o palabra clave</label>
-        <input type="text" id="dirBuscar" placeholder="Ej. PRO-ST, COPASST, activos fijos…">
+        <label>Buscar por título de documento</label>
+        <input type="text" id="dirBuscar" placeholder="Ej. registro, acta, política, convivencia…">
       </div>
     </div>
+    <p class="nota" id="dirAyuda" style="margin:-4px 0 10px">Sin búsqueda activa: se muestran las carpetas por área. Escribe una palabra para listar solo los documentos cuyo título la contiene.</p>
     <div class="tbl-wrap">
       <table class="reg" id="dirTabla">
-        <thead><tr><th>Área</th><th>Tipo / código</th><th>Carpeta</th><th>Notas</th><th>Último código visto</th></tr></thead>
+        <thead><tr><th>Área</th><th>Tipo / código</th><th>Carpeta</th><th id="dirColDoc">Notas</th><th>Último código visto</th></tr></thead>
         <tbody id="dirTbody"></tbody>
       </table>
     </div>
@@ -540,32 +541,52 @@ function llenarDirectorio(){
 }
 function pintarDirectorio(){
   const filtro=$("dirFiltro").value;
-  const busq=($("dirBuscar")?.value||"").trim().toUpperCase();
-  const filas=DIRECTORIO.filter(d=>{
-    if(filtro && d.area!==filtro) return false;
-    if(!busq) return true;
-    const campo=(d.tipo+" "+d.ultimo+" "+d.carpeta+" "+d.nota+" "+(d.claves||"")+" "+(d.documentos||"")).toUpperCase();
-    return campo.includes(busq);
-  });
-  if(!filas.length){
-    $("dirTbody").innerHTML='<tr><td colspan="5" class="nota" style="text-align:center;padding:14px">Sin resultados para esa búsqueda.</td></tr>';
+  const busq=($("dirBuscar")?.value||"").trim();
+  const busqU=busq.toUpperCase();
+  const colDoc=$("dirColDoc");
+  const ayuda=$("dirAyuda");
+
+  if(busqU){
+    if(colDoc) colDoc.textContent="Documento encontrado";
+    if(ayuda) ayuda.textContent=`Mostrando documentos cuyo título contiene "${busq}".`;
+    const resultados=[];
+    DIRECTORIO.forEach(d=>{
+      if(filtro && d.area!==filtro) return;
+      if(!d.documentos) return;
+      d.documentos.split(";").map(s=>s.trim()).forEach(doc=>{
+        if(doc.toUpperCase().includes(busqU)){
+          resultados.push({...d, docTitulo:doc});
+        }
+      });
+    });
+    if(!resultados.length){
+      $("dirTbody").innerHTML='<tr><td colspan="5" class="nota" style="text-align:center;padding:14px">Sin documentos que coincidan con ese título. Prueba con otra palabra.</td></tr>';
+      return;
+    }
+    $("dirTbody").innerHTML=resultados.map(d=>`<tr>
+      <td><b>${d.area}</b></td>
+      <td style="font-family:monospace;font-size:11px">${d.tipo}</td>
+      <td><a href="${d.url}" target="_blank" rel="noopener" style="color:#1a1a1a;font-weight:700;text-decoration:underline">${d.carpeta} ↗</a></td>
+      <td><b style="color:#7a5f00">📄 ${d.docTitulo}</b></td>
+      <td style="font-family:monospace;font-size:11px;white-space:nowrap">${d.ultimo}</td>
+    </tr>`).join("");
     return;
   }
-  $("dirTbody").innerHTML=filas.map(d=>{
-    const busq2=($("dirBuscar")?.value||"").trim();
-    let docsHTML="";
-    if(busq2 && d.documentos){
-      const coincide=d.documentos.split(";").map(s=>s.trim()).filter(doc=>doc.toUpperCase().includes(busq2.toUpperCase()));
-      if(coincide.length) docsHTML=`<div style="margin-top:4px;font-size:11px;color:#7a5f00">📄 ${coincide.join(" · ")}</div>`;
-    }
-    return `<tr>
+
+  if(colDoc) colDoc.textContent="Notas";
+  if(ayuda) ayuda.textContent="Sin búsqueda activa: se muestran las carpetas por área. Escribe una palabra para listar solo los documentos cuyo título la contiene.";
+  const filas=DIRECTORIO.filter(d=>!filtro||d.area===filtro);
+  if(!filas.length){
+    $("dirTbody").innerHTML='<tr><td colspan="5" class="nota" style="text-align:center;padding:14px">Sin resultados.</td></tr>';
+    return;
+  }
+  $("dirTbody").innerHTML=filas.map(d=>`<tr>
     <td><b>${d.area}</b></td>
     <td style="font-family:monospace;font-size:11px">${d.tipo}</td>
     <td><a href="${d.url}" target="_blank" rel="noopener" style="color:#1a1a1a;font-weight:700;text-decoration:underline">${d.carpeta} ↗</a></td>
-    <td>${d.nota}${docsHTML}</td>
+    <td>${d.nota}</td>
     <td style="font-family:monospace;font-size:11px;white-space:nowrap">${d.ultimo}</td>
-  </tr>`;
-  }).join("");
+  </tr>`).join("");
 }
 
 /* ========== FIREBASE ========== */
